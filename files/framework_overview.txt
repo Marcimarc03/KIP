@@ -1,0 +1,142 @@
+================================================================================
+KIP – Kreislauffabrik: Projektüberblick & Framework
+KIT / wbk Institut für Produktionstechnik
+================================================================================
+
+ECKDATEN
+--------
+Projekt:      Visuelle Inspektion von Winkelschleifer-Komponenten
+Abgabe:       31.07.2026 (Code + Folien via ILIAS)
+Präsentation: 07.08.2026
+Kontakt:      dominik.koch@kit.edu, edwin.blum@kit.edu
+
+
+DATENSÄTZE
+----------
+Datensatz A – Synthetisch
+  Inhalt:     Synthetische Bilder von Winkelschleifer-Komponenten
+  Annotation: Klassen-Labels + Segmentierungsmasken (keine Defekte)
+  Nutzung:    Initiales Training
+
+Datensatz B – Real (Objekte & Assemblies)
+  Inhalt:     Reale Aufnahmen ganzer Geräte + Baugruppen
+  Annotation: Klassen-Labels
+  Nutzung:    Evaluation + Fine-Tuning
+
+Datensatz C – Nahaufnahmen mit Defekten
+  Inhalt:     Detailaufnahmen mit Defekten (Kratzer, Abplatzungen, Verschleiß)
+  Annotation: Defektlabels (sehr wenige Bilder!)
+  Nutzung:    Defekterkennung (AP 3)
+
+
+KRITISCHE STELLEN (aus Kickoff-Notes)
+--------------------------------------
+1. Zwei Aufgaben je nach Kamera-Modus:
+   - Normalbild → Detection / Segmentierung (AP 2)
+   - Nahaufnahme → Defekterkennung (AP 3)
+   → Pipeline-Verzweigung muss architektonisch sauber getrennt werden.
+
+2. Kein Testset vorhanden:
+   → Val-Set stratifiziert aufteilen, Empfehlung: 70 / 15 / 15 (Train/Val/Test)
+
+3. Wenige reale Daten:
+   → Heavy Augmentation mit Albumentations (Flip, Rotation, Brightness/Contrast,
+     Cutout, Mosaic) – besonders wichtig für Datensatz C.
+
+4. SAM2 als Zero-Shot-Baseline:
+   → Muss gegen fine-getunte Modelle verglichen werden.
+   → Kosten- und Latenzmessung vorgeschrieben (AP 4).
+
+5. Kaum Defektbeispiele in Datensatz C:
+   → Primärstrategie: Anomalieerkennung (PatchCore) + Augmentation.
+   → Kein naiver Classifier als Hauptansatz.
+
+6. Jetson Orin Nano (8 GB Shared RAM):
+   → TensorRT-Export + INT8/FP16-Quantisierung zwingend.
+   → Modellgröße: max. YOLOv11n/s.
+   → Ziel-Latenz: ≤ 100ms / Frame (≥ 10 FPS).
+
+
+FRAMEWORK (nach CRISP-DM)
+--------------------------
+
+AP 1 – Data Understanding & Preparation
+  - EDA: Klassenverteilung (seaborn), Bildqualität, Annotation-Format-Check
+           (YOLO-Format vs. COCO JSON)
+  - Split: Stratified Split (scikit-learn) – Val-Set halbieren für Testset
+  - Tracking: W&B oder MLflow ab Tag 1 (jeder Experiment-Run geloggt)
+
+AP 2 – Komponentenklassifikation & Instanzsegmentierung
+  - Backbone:       YOLOv11n (schnellste) oder YOLOv11s (Accuracy-Kompromiss)
+                    → nativ TensorRT-exportierbar
+  - Segmentierung:  YOLOv11-seg + SAM2 als Zero-Shot-Baseline
+  - Kernexperiment: Datenmix [100% synth | 50/50 | 100% real] → F1 + mAP messen
+  - Augmentation:   Albumentations-Pipeline (Mosaic, Affine, ColorJitter)
+
+AP 3 – Defekterkennung (Few-Shot / Anomalie)
+
+  Ansatz               | Modell               | Vorteil              | Nachteil
+  ---------------------|----------------------|----------------------|--------------------
+  Anomalieerkennung    | PatchCore (primär)   | nur gute Teile nötig | kein Defekt-Typ
+  Transfer Learning    | EfficientNet-B0      | schnell, klein       | braucht Defektbilder
+  Synthetische Defekte | Albumentations +     | mehr Daten           | Domänenlücke
+                       | Copy-Paste           |                      |
+  Few-Shot             | CLIP-Adapter /       | flexibel             | komplex
+                       | Prototypical Net     |                      |
+
+  Empfehlung: PatchCore als Baseline + Augmentation-Dataset →
+              dann fine-getunte Klassifikation falls F1 ausreichend.
+
+AP 4 – Deployment auf Jetson Orin Nano
+
+  Training (Colab / DGX V100)
+      ↓
+  ONNX Export
+      ↓
+  TensorRT Engine (INT8, Kalibrierungsdaten aus Val-Set)
+      ↓
+  Deployment (Python / C++ Inferenz, OpenCV Kamera-Capture)
+      ↓
+  Latenz-Messung + Vergleich mit VLM-API (GPT-4V / Claude Vision)
+
+  - Quantisierung: INT8 bevorzugt (2–4× Speedup), FP16 als Fallback
+  - VLM-Vergleich: API-Kosten + Latenz systematisch dokumentieren (CRISP-DM)
+
+
+GÜTEMETRIKEN
+------------
+Task                | Primär         | Sekundär        | Nebenbedingung
+--------------------|----------------|-----------------|----------------------
+Klassifikation      | F1 (macro)     | Accuracy        | Jetson Latenz ≤ 100ms
+Segmentierung       | mAP@50         | IoU             | Modellgröße ≤ 50 MB
+Defekterkennung     | F1 (binary)    | ROC-AUC / AUROC | Recall ≥ Precision
+                    |                |                  | (Miss < False Alarm)
+
+
+EMPFOHLENER ZEITPLAN
+---------------------
+KW 20-21 (Mai)  AP 1: EDA, Splits, Augmentation-Pipeline aufsetzen
+KW 22-23 (Jun)  AP 2: YOLOv11 Training, Datenmix-Experimente
+KW 24-25 (Jun)  AP 3: Anomalieerkennung + Defektdetektion
+KW 26-27 (Jul)  AP 4: TensorRT Export, Jetson Deployment, Benchmarks
+KW 28-30 (Jul)  Folien, Dokumentation, Feinschliff → Abgabe 31.07.2026
+
+
+FRÜHE ARCHITEKTURENTSCHEIDUNGEN (hohe Priorität)
+-------------------------------------------------
+1. YOLOv11n vs. YOLOv11s als Backbone
+   → Bestimmt Modellgröße, Latenz und Accuracy für alle nachgelagerten Schritte.
+
+2. PatchCore (Anomalie) vs. fine-tuned Classifier für AP 3
+   → Hängt von der tatsächlichen Anzahl an Defektbildern in Datensatz C ab.
+   → Erst nach EDA (AP 1) final entscheiden.
+
+
+EMPFOHLENE BIBLIOTHEKEN
+------------------------
+Training:      PyTorch, Ultralytics (YOLOv11), Detectron2 / MMDetection
+Augmentation:  Albumentations, OpenCV
+Anomalie:      anomalib (PatchCore, FastFlow)
+Deployment:    TensorRT, ONNX Runtime, OpenCV
+Tracking:      Weights & Biases (W&B) oder MLflow
+================================================================================

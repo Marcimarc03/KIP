@@ -1,0 +1,8 @@
+Datensatz
+- Unterscheidung zwischen Nahaufnahme und normal -> Segmentierung vs detektion
+- Gibt train und val, test muss selbst „erzeugt“ werden -> zb neu Aufteilung der Daten (falls val groß genug ist, einfach das splitten)
+- Wenige reale Daten -> data augmentation von realen Daten
+- SAN (segment anything) -> segmentierungsmethodik von Meta
+- Gibt oft keine guten Bauteile zu gleichem defekt -> transfer learning (nochmal in Folien zu concept drift angucken)
+- Problem: on press Lösung auf Nvidia Jetson (8gb ram) -> kleines modell wird notwendig
+    - Wichtig ist dass bild am ende in real time geladen wird (externe Kamera)
