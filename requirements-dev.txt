@@ -1,0 +1,52 @@
+# KIP - Dev machine requirements (training / notebook / EDA / ONNX export)
+# DO NOT install on the Jetson - use requirements-jetson.txt there.
+#
+# ---------------------------------------------------------------------------
+# Python version recommendation
+# ---------------------------------------------------------------------------
+# RECOMMENDED:  Python 3.10 - 3.12  (matches Jetson JetPack 6 = Python 3.10,
+#               and all packages below have stable wheels for this range)
+#
+# Python 3.13 / 3.14 also work, but pip will resolve newer package versions
+# than the originally tested set. If you hit install errors on 3.14, install
+# Python 3.11 via pyenv:
+#     pyenv install 3.11.9
+#     pyenv local 3.11.9
+#     python -m venv .venv && source .venv/bin/activate
+#
+# All version specifiers below use ">=" (lower bounds only) so pip can pick
+# wheels matching your interpreter. Tested upper-bound set is noted in
+# comments. If you want exact reproducibility, freeze with `pip freeze`
+# after a successful install.
+# ---------------------------------------------------------------------------
+
+# Core deep learning  (tested with: torch 2.3.1 / torchvision 0.18.1)
+torch>=2.3
+torchvision>=0.18
+ultralytics>=8.3
+
+# Computer vision / image IO  (tested: opencv 4.10, albumentations 1.4)
+opencv-python>=4.9
+albumentations>=1.4
+Pillow>=10.0
+
+# Anomaly detection - optional. The notebook has a torchvision-only
+# fallback if anomalib is not installed.  (tested: anomalib 1.1.1)
+# anomalib only supports Python 3.10-3.12 - skip on 3.13+
+anomalib>=1.1 ; python_version < "3.13"
+
+# Data / metrics / utils
+numpy>=1.26,<3
+pandas>=2.2
+scikit-learn>=1.5
+matplotlib>=3.9
+seaborn>=0.13
+tqdm>=4.66
+
+# Edge export
+onnx>=1.17
+onnxruntime>=1.19
+
+# Notebook tooling
+nbformat>=5.10
+jupyter>=1.1

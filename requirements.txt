@@ -1,0 +1,17 @@
+# KIP - Visual Inspection of Angle Grinder Components
+#
+# This file is intentionally a pointer. Requirements are split because the
+# x86 dev machine (training, notebook, plotting) and the aarch64 Jetson
+# Orin Nano (inference only) need very different package sets — and most
+# Jetson packages CANNOT be installed via pip from PyPI; they ship as
+# NVIDIA-built wheels for JetPack.
+#
+#   - On the dev machine (training / notebook):
+#       pip install -r requirements-dev.txt
+#
+#   - On the Jetson Orin Nano (deployment):
+#       pip install -r requirements-jetson.txt
+#       # then follow the header comments in that file for torch /
+#       # torchvision / onnxruntime-gpu / tensorrt / opencv (JetPack wheels).
+#
+# Do not run `pip install -r requirements.txt` directly.

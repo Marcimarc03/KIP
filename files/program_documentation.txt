@@ -1,0 +1,285 @@
+================================================================================
+KIP – Visual Inspection & Defect Detection — Programm-Dokumentation
+KIT / wbk Institut für Produktionstechnik · Projekt Kreislauffabrik
+Stand: 2026-05-09
+================================================================================
+
+INHALT
+------
+1. Was das Programm tut (Kurzfassung)
+2. Projektstruktur (Dateien & Ordner)
+3. Was im Notebook passiert (Zelle für Zelle)
+4. Real-Time Inferenz auf dem Jetson Orin Nano
+5. Trainings-Workflow (Dev-Maschine)
+6. Deployment-Workflow (Dev → Jetson)
+7. Bekannte Einschränkungen & nächste Schritte
+8. Reproduzierbarkeit (Befehlsreferenz)
+
+
+1. WAS DAS PROGRAMM TUT (KURZFASSUNG)
+--------------------------------------
+Das Programm ist eine end-to-end Pipeline zur visuellen Inspektion von
+Winkelschleifer-Komponenten für die Kreislauffabrik (SFB 1574). Es:
+
+  (a) trainiert ein YOLOv11n-seg Modell zur Instanzsegmentierung von
+      9 Komponentenklassen (synthetisches Pre-Training + Fine-Tuning auf
+      realen Aufnahmen),
+
+  (b) trainiert ein PatchCore-Anomaliemodell auf "guten" Komponenten-
+      Crops zur unsupervised Defekterkennung (notwendig, da Datensatz C
+      mit Defekt-Labels noch nicht vorliegt),
+
+  (c) exportiert beide Modelle nach ONNX → TensorRT (INT8/FP16) für
+      Edge-Inferenz auf dem NVIDIA Jetson Orin Nano (8 GB Shared RAM),
+
+  (d) führt eine Real-Time-Loop aus: USB- oder CSI-Kamera → YOLO-seg
+      Detection → Crop pro Komponente → PatchCore Anomalie-Score →
+      Overlay (grün=OK, rot=DEFEKT) auf Live-Bild bei ≥ 10 FPS Ziel.
+
+
+2. PROJEKTSTRUKTUR
+-------------------
+KIP/
+├── data/                                       (bereitgestellte Datensätze)
+│   ├── synth_Daten/                            Datensatz A: 4400/1100 synth
+│   ├── object_segmentation_real_1088/          Datensatz B v1: 713/178 real
+│   └── object_segmentation_real_v3_1088/       Datensatz B v3: 771/191 real
+│                                               (PRIMÄRER realer Datensatz —
+│                                                inkl. bevel_gear_spindle Closeups)
+│
+├── notebooks/
+│   └── kip_inspection.ipynb                    Haupt-Notebook (32 Zellen,
+│                                               CRISP-DM AP1-AP4)
+│
+├── scripts/                                    Deployment-Artefakte für Jetson
+│   ├── jetson_inference.py                     Standalone Real-Time Loop
+│                                               (TRT/ORT Backend, OpenCV Camera)
+│   ├── build_int8_cache.py                     INT8 Kalibrierung (≤500 Bilder
+│                                               → binary cache file)
+│   └── export_to_jetson.sh                     trtexec Build-Pipeline
+│
+├── tools/
+│   └── tag_cells.py                            Markiert Notebook-Zellen mit
+│                                               nbformat-Tag "skip-export" für
+│                                               nbconvert-Filterung
+│
+├── files/                                      Doku & Aufgabenstellung
+│   ├── Aufgabenstellung_Inspektion_Kreislauffabrik.pdf
+│   ├── notes.txt                               Kickoff-Notizen
+│   ├── framework_overview.txt                  Konzeptueller Framework-Überblick
+│   └── program_documentation.txt               (DIESE DATEI)
+│
+├── models/                                     (wird erzeugt: .pt, .onnx, .engine)
+├── results/                                    (wird erzeugt: metrics.json, plots)
+│
+├── requirements.txt                            Pointer-Datei mit Erklärung
+├── requirements-dev.txt                        Vollständige Dev-Pins (x86 GPU)
+└── requirements-jetson.txt                     Minimal-Pins für aarch64
+                                                (torch/ORT-GPU separat von NVIDIA)
+
+
+3. WAS IM NOTEBOOK PASSIERT (ZELLE FÜR ZELLE)
+-----------------------------------------------
+
+SECTION 0 — Setup & Imports
+  - Definiert PROJECT_ROOT, DATA_DIR, MODELS_DIR, RESULTS_DIR (pathlib.Path)
+  - Imports: ultralytics, torch, opencv, anomalib (mit Fallback), albumentations,
+    sklearn, matplotlib, seaborn, nbformat, onnx, onnxruntime
+  - Device-Detection (cuda/cpu), Seeds (torch + numpy + random)
+  - Class-Liste der 9 Komponenten + Dataset-Map (synth, real_v1, real_v3)
+
+SECTION 1 — AP1: Data Understanding & Preparation
+  - load_label_counts() liest label_counts.csv aller drei Datensätze
+  - Bar-Plots der Klassenverteilung (matplotlib + seaborn)
+  - dataset_summary() prüft Bilder-/Label-/Polygon-Counts und Bildgrößen
+  - show_samples() zeichnet Polygon-Overlays auf Stichproben
+  - create_test_split() teilt Val 50/50 in Val/Test (stratified, idempotent,
+    Seed=42)
+  - write_eval_yaml() erzeugt val/test data.yaml für YOLO
+  - Markdown-Cell flaggt explizit, dass Datensatz C (Defekt-Closeups) FEHLT
+
+SECTION 2 — AP2: Komponentenklassifikation & Instanzsegmentierung
+  - MODEL_VARIANT Flag (default: "yolo11n-seg.pt")
+  - train_yolo() / evaluate_yolo() Helper über ultralytics.YOLO
+  - Drei Datenmix-Experimente in separaten Zellen:
+      Exp A: 100 % synthetisch
+      Exp B: 100 % real (v3)
+      Exp C: synth pretrain → real v3 fine-tune (TRANSFER LEARNING)
+  - Metriken pro Experiment: mAP@50, mAP@50-95, F1 (macro), Precision, Recall
+  - Persistierung in results/exp_metrics.json
+  - Vergleichs-Bar-Chart über alle drei Experimente
+  - Qualitative Predictions (Input + vorhergesagte Maske)
+  - imgsz=640 konsistent über Training und Export
+  - EPOCHS=5 als Quick-Test-Default (Production: 50–100)
+
+SECTION 3 — AP3: Defekterkennung (Few-Shot / Anomalie)
+  - Markdown: erklärt fehlenden Datensatz C und die PatchCore-Strategie
+  - extract_component_crops() nutzt das trainierte YOLO, um Komponenten als
+    "normale" Trainingsdaten für PatchCore aus realen Bildern zu schneiden
+  - train_patchcore() mit anomalib (primär) oder torchvision-basiertem
+    Fallback (resnet18 feature extractor + cosine NN scoring auf coreset)
+  - load_dataset_c() Stub mit klarer Fehlermeldung
+  - detect_defect(image, model, threshold) → (score, anomaly_map, is_defect)
+  - Demo-Cell zeigt Anomaly-Heatmaps auf Crops
+  - Diskussion alternativer Ansätze (CLIP-Adapter, Cut-Paste synthetische
+    Defekte, Few-Shot Prototypical Networks)
+
+SECTION 4 — AP4: Edge Deployment (Jetson Orin Nano 8 GB)
+  - YOLOv11-seg ONNX Export: imgsz=640, half=True, simplify=True, opset=12
+  - PatchCore ONNX Export mit dynamic_axes={"input":{0:"N"}} für Batch
+  - Latenz-Benchmark auf Dev-CPU als Baseline (Jetson INT8 ≈ 3–5 × schneller)
+  - VLM-Vergleichstabelle (GPT-4V / Claude Vision Kosten + Latenz)
+  - Fallback run_realtime_pipeline() im Notebook (Tag: skip-export)
+
+SECTION 5 — Conversion & Deployment Hints
+  - Markdown: primärer Deployment-Pfad ist scripts/jetson_inference.py
+    (kein nbconvert nötig)
+  - nbconvert-Befehl als Fallback dokumentiert (mit echten cell-tags)
+
+
+4. REAL-TIME INFERENZ AUF DEM JETSON ORIN NANO
+-----------------------------------------------
+
+Datei: scripts/jetson_inference.py
+
+Pipeline pro Frame:
+  1. cv2.VideoCapture liefert Frame (USB: --camera 0  |  CSI: GStreamer-Pipe)
+     - cap.set(CAP_PROP_BUFFERSIZE, 1) verhindert Frame-Aufstauen
+     - Tolerant gegen bis zu 30 aufeinanderfolgende cap.read()-Failures
+  2. Letterbox auf 640×640, BGR→RGB, /255, NCHW
+  3. YOLOv11n-seg Inferenz (TensorRT INT8 Engine bevorzugt, sonst ONNX-Runtime
+     Fallback wenn .engine fehlt — sibling .onnx wird automatisch geladen)
+  4. Multi-Output-Decode: output0 (boxes+coeffs) + output1 (mask protos)
+     → Sigmoid(coeffs @ protos) → Resize per Bbox-Crop
+  5. NMS via cv2.dnn.NMSBoxes (xywh-Format korrekt)
+  6. Pro Detection: Crop, skip wenn < 4×4 px
+  7. Alle gültigen Crops gestapelt → EIN PatchCore-Forward (batched)
+  8. Score-Threshold-Entscheidung pro Komponente
+  9. Overlay: bbox + class_name + anomaly_score + Farbe (grün/rot)
+ 10. FPS-Counter (end-to-end), 'q' beendet Loop, try/finally räumt Kamera auf
+
+CLI:
+  python jetson_inference.py \
+    --camera 0 \
+    --yolo models/yolo11n_seg.engine \
+    --patchcore models/patchcore.engine \
+    --threshold 0.7 \
+    --conf 0.25
+
+Optional:
+  --calibrate-threshold <ok_crops_dir>   → druckt mean+3·std als Empfehlung
+  --camera "nvarguscamerasrc ! ..."      → CSI-Kamera via GStreamer
+
+Hardware-Profile (vor dem Start):
+  sudo nvpmodel -m 0       # MAXN Power-Mode
+  sudo jetson_clocks       # Clocks auf Maximum locken
+
+
+5. TRAININGS-WORKFLOW (DEV-MASCHINE)
+-------------------------------------
+
+  python -m venv .venv && source .venv/bin/activate
+  pip install -r requirements-dev.txt
+  jupyter lab notebooks/kip_inspection.ipynb
+
+Empfohlene Reihenfolge der Zellen-Ausführung:
+  1. Section 0 (Setup)
+  2. Section 1 (AP1 EDA + create_test_split — einmalig)
+  3. Section 2 Exp A (synth pretrain) — speichert best.pt
+  4. Section 2 Exp B (real only) — Vergleichsbasis
+  5. Section 2 Exp C (transfer learning) — primäres Modell
+  6. Section 3 (Crop-Extraktion + PatchCore Training auf "OK" Crops)
+  7. Section 4 (ONNX Export beider Modelle)
+
+
+6. DEPLOYMENT-WORKFLOW (DEV → JETSON)
+--------------------------------------
+
+Auf der Dev-Maschine:
+  1. Trainiere YOLO + PatchCore (siehe oben), exportiere ONNX
+  2. Kopiere folgende Artefakte auf den Jetson:
+       scripts/                  (alle Scripts)
+       models/yolo11n_seg.onnx   (exportiertes Detection-Modell)
+       models/patchcore.onnx     (exportiertes Anomalie-Modell)
+       data/.../images/train     (Kalibrierbilder, ≥500 empfohlen)
+
+Auf dem Jetson (JetPack 6.x, Ubuntu 22.04, CUDA 12.2, TensorRT 8.6):
+  1. Performance-Profil aktivieren:
+       sudo nvpmodel -m 0 && sudo jetson_clocks
+
+  2. Python-Abhängigkeiten:
+       sudo apt install python3-opencv             # mit GStreamer-Support
+       pip install -r requirements-jetson.txt
+       # torch + torchvision von NVIDIA's Jetson-Wheel-Index
+       # onnxruntime-gpu von Jetson Zoo
+
+  3. INT8-Kalibrierung + TensorRT-Engines bauen:
+       bash scripts/export_to_jetson.sh
+       # → erzeugt models/yolo11n_seg.engine (INT8)
+       # → erzeugt models/patchcore.engine (FP16, dynamic batch 1-16)
+
+  4. Real-Time Inferenz starten:
+       python scripts/jetson_inference.py \
+         --camera 0 \
+         --yolo models/yolo11n_seg.engine \
+         --patchcore models/patchcore.engine
+
+  Optional (einmalig vor Produktivbetrieb):
+       python scripts/jetson_inference.py \
+         --calibrate-threshold path/to/ok_crops
+       # → druckt empfohlenen --threshold Wert
+
+
+7. BEKANNTE EINSCHRÄNKUNGEN & NÄCHSTE SCHRITTE
+-----------------------------------------------
+
+[!] Datensatz C (Defekt-Closeups) FEHLT BISHER
+    → Anomalieerkennung ist unsupervised (PatchCore auf "guten" Crops)
+    → Sobald Datensatz C verfügbar: load_dataset_c() füllen, dann
+      supervised Defekt-Klassifikation als Vergleichs-Pfad ergänzen
+    → Erst dann ist eine F1-Score-Bewertung im klassischen Sinne möglich
+
+[!] Modell-Wahl PatchCore vs. fine-tuned Classifier ist abhängig von
+    der tatsächlichen Defekt-Bildanzahl in C (final entscheiden nach EDA)
+
+[!] INT8-Kalibrierung benötigt 500–1000 repräsentative Bilder für stabile
+    mAP. Mit weniger Kalibrierdaten droht Accuracy-Drop von 5–15 %.
+
+[!] FPS-Ziel ≥ 10 ist realistisch mit YOLOv11n-seg INT8 + max. ~8 Komponenten
+    pro Frame. Bei höherer Komponenten-Dichte ggf. PatchCore-Inferenz drosseln
+    (z. B. nur jede n-te Detection prüfen).
+
+[!] Threshold-Wahl für PatchCore ist datenabhängig und MUSS einmal mit
+    --calibrate-threshold vor Produktivbetrieb justiert werden.
+
+
+8. REPRODUZIERBARKEIT (BEFEHLSREFERENZ)
+----------------------------------------
+
+# Dev-Setup
+python3.10 -m venv .venv && source .venv/bin/activate
+pip install -r requirements-dev.txt
+jupyter lab notebooks/kip_inspection.ipynb
+
+# Notebook → Skript (optional, jetson_inference.py ist bevorzugt):
+python tools/tag_cells.py    # markiert Zellen einmal
+jupyter nbconvert --to script notebooks/kip_inspection.ipynb \
+  --TagRemovePreprocessor.enabled=True \
+  --TagRemovePreprocessor.remove_cell_tags='{"skip-export"}'
+
+# Jetson Deployment (auf dem Gerät)
+sudo nvpmodel -m 0 && sudo jetson_clocks
+sudo apt install python3-opencv
+pip install -r requirements-jetson.txt
+# torch wheel installieren (von NVIDIA's Jetson Pytorch index)
+bash scripts/export_to_jetson.sh
+python scripts/jetson_inference.py --camera 0 \
+  --yolo models/yolo11n_seg.engine \
+  --patchcore models/patchcore.engine
+
+# Kontakt bei Rückfragen:
+# dominik.koch@kit.edu, edwin.blum@kit.edu
+
+================================================================================
+ENDE DER DOKUMENTATION
+================================================================================

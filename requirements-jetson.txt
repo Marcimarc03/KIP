@@ -1,0 +1,39 @@
+# KIP - Jetson Orin Nano (aarch64 / JetPack 6.x) inference requirements
+#
+# This file lists ONLY the pure-pip packages that install cleanly on the
+# Jetson. The big GPU pieces (torch, torchvision, onnxruntime-gpu, tensorrt,
+# opencv-with-GStreamer) MUST come from NVIDIA / apt — pip wheels from
+# PyPI either don't exist for aarch64 or don't have CUDA support.
+#
+# ---------------------------------------------------------------------------
+# Manual install steps (do these BEFORE `pip install -r requirements-jetson.txt`):
+#
+#   1. torch + torchvision (CUDA-enabled, JetPack-matched):
+#        Download the wheels for your JetPack version from
+#        https://developer.download.nvidia.com/compute/redist/jp/v60/pytorch/
+#        and `pip install torch-<...>.whl torchvision-<...>.whl`.
+#
+#   2. onnxruntime-gpu:
+#        Download the matching wheel from the Jetson Zoo
+#        (https://elinux.org/Jetson_Zoo#ONNX_Runtime) and pip-install it.
+#        DO NOT `pip install onnxruntime-gpu` — the PyPI build has no CUDA
+#        Execution Provider for aarch64 Jetson.
+#
+#   3. tensorrt:
+#        Pre-installed in JetPack. Just verify with `python3 -c "import tensorrt"`.
+#        Do not `pip install tensorrt`.
+#
+#   4. opencv (PREFERRED: apt for GStreamer + V4L2 support):
+#        sudo apt install python3-opencv
+#        That build has nvarguscamerasrc / nvvidconv pipeline support, which
+#        the pip wheel `opencv-python-headless` does NOT.
+#        If you need a venv-local copy, fall back to opencv-python-headless
+#        below — but you'll lose CSI camera GStreamer ingest.
+# ---------------------------------------------------------------------------
+
+# Pure-pip packages that work on aarch64 / Jetson:
+numpy<2
+opencv-python-headless  # alternative: sudo apt install python3-opencv (recommended, has GStreamer)
+pycuda
+onnx
+Pillow
