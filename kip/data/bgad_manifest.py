@@ -192,7 +192,7 @@ def save_manifest(df: pd.DataFrame, out_dir) -> Path:
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     csv_path = out_dir / "manifest.csv"
-    df.to_csv(csv_path, index=False)
+    df.to_csv(csv_path, index=False, lineterminator="\n")  # LF auch unter Windows
 
     per_split = {}
     for split in sorted(df["split"].unique()):
@@ -212,5 +212,5 @@ def save_manifest(df: pd.DataFrame, out_dir) -> Path:
         "per_split": per_split,
         "sha256": hashlib.sha256(csv_path.read_bytes()).hexdigest()[:16],
     }
-    (out_dir / "manifest_meta.json").write_text(json.dumps(meta, indent=2))
+    (out_dir / "manifest_meta.json").write_text(json.dumps(meta, indent=2), newline="\n")
     return csv_path
