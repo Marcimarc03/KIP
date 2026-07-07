@@ -21,6 +21,9 @@
 # ---------------------------------------------------------------------------
 
 # Core deep learning  (tested with: torch 2.3.1 / torchvision 0.18.1)
+# WINDOWS-HINWEIS (2026-07-07): torch 2.12.1 schlaegt unter Windows 11 mit
+# 'WinError 1114 ... c10.dll' beim Import fehl (Python 3.12, CPU-Wheel).
+# Workaround: pip install --force-reinstall torch==2.5.1 torchvision==0.20.1
 torch>=2.3
 torchvision>=0.18
 ultralytics>=8.3
