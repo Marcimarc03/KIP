@@ -1,0 +1,14 @@
+{
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.10",
+  "processor": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+  "machine": "AMD64",
+  "torch_version": "2.5.1+cpu",
+  "mps_available": false,
+  "cuda_available": false,
+  "cuda_version": null,
+  "cuda_device_count": 0,
+  "ram_gb": 17.0,
+  "chip": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+  "cuda_devices": []
+}
