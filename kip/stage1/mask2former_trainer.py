@@ -18,6 +18,7 @@ import json
 import os
 import time
 from collections import defaultdict
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Union
 
@@ -526,7 +527,7 @@ def _to_device(obj, device: torch.device):
     """Recursively move tensors (or dict/list of tensors) to device."""
     if isinstance(obj, torch.Tensor):
         return obj.to(device)
-    if isinstance(obj, dict):
+    if isinstance(obj, Mapping):  # dict AND transformers BatchFeature (UserDict)
         return {k: _to_device(v, device) for k, v in obj.items()}
     if isinstance(obj, list):
         return [_to_device(v, device) for v in obj]
