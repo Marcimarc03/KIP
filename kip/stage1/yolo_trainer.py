@@ -98,6 +98,9 @@ class YoloSegTrainer:
             "verbose": False,
             "amp": not is_mps,           # AMP off on MPS
             "fraction": fraction,
+            # DataLoader workers: env-overridable. Set KIP_WORKERS=0 on hosts with
+            # a small /dev/shm (e.g. Docker containers) to avoid shared-memory errors.
+            "workers": int(os.environ.get("KIP_WORKERS", "8")),
             # Augmentation hyp dict
             **hyp,
         }
