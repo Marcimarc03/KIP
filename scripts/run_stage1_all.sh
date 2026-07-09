@@ -9,8 +9,8 @@ set -u
 cd "$(dirname "$0")/.."
 mkdir -p logs
 
-export KIP_WORKERS=0                       # YOLO ohne DataLoader-Worker -> kein /dev/shm
-rm -f /dev/shm/torch_* 2>/dev/null || true # verwaiste shm-Reste abgestuerzter Laeufe
+export KIP_WORKERS=0                        # YOLO ohne DataLoader-Worker -> kein /dev/shm noetig
+# (kein /dev/shm-Cleanup: geteilter Container -> fremde Jobs nicht stoeren)
 
 D="--device cuda:0 --seed 42"
 
