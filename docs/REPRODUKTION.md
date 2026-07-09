@@ -11,111 +11,81 @@ pip install -e .
 # Alle Abhängigkeiten sind in requirements-dev.txt gelistet.
 ```
 
-COCO-Konvertierungen müssen vorhanden sein unter `data/coco_converted/`:
+Tool-basierten Split setzen/prüfen, dann COCO-Konvertierungen unter `data/coco_converted/` erzeugen:
 ```bash
-python scripts/prepare_stage1_coco.py   # falls noch nicht erledigt
+python scripts/apply_stage1_split.py    # test=tool98, val=tool03, Rest train (idempotent; ersetzt make_test_split.py)
+                                        # -> train=803 / val=101 / test=58, tool-disjunkt, test deckt alle 6 realen Klassen
+python scripts/prepare_stage1_coco.py   # COCO aus train/val/test (falls noch nicht erledigt)
 ```
+Hintergrund und Herleitung des Splits: `docs/split_begruendung.md`. Der frühere `make_test_split.py`
+(test=tool10) deckte nur 4 der 6 realen Klassen ab und wird nicht mehr verwendet.
 
 ---
 
 ## Stage-1: Komponenten-Segmentierung (YOLO11n-seg vs. Mask2Former)
 
-Acht vollständige GPU-Läufe (CUDA-Server, nicht lokal ausgeführt).
-Ausgaben landen ausschließlich unter `results/component_benchmark/`.
+Struktur: ein Primärvergleich (Augmentierung AN) plus zwei Ablationen. Vergleichskritisch
+identisch: Datensplit, Testset (tool98), `evaluator.py` (pycocotools), Box-/Masken-Metriken,
+Augmentierungs-Policy je Block, Seed 42. Jedes Modell mit seinem Standard-Rezept
+(YOLO: Ultralytics-Defaults; Mask2Former: AdamW, lr 1e-4, Backbone-Freeze 20). Ausgaben nur
+unter `results/component_benchmark/`.
 
-### YOLO11n-seg
+Auflösung: YOLO 1088, Mask2Former default 800. Für die Fairness-Aussage möglichst gleich —
+falls M2F bei `--imgsz 1088` (Batch 8) nicht am Speicher scheitert, dort ebenfalls 1088;
+sonst die Differenz als jeweiligen Standard-Betriebspunkt dokumentieren.
+
+### Primärvergleich (Augmentierung AN)
 
 ```bash
-# YOLO – Augmentierung AN
-python scripts/run_stage1.py \
-    --model yolo \
-    --aug on \
-    --epochs 100 \
-    --imgsz 1088 \
-    --batch 16 \
-    --device cuda:0 \
-    --seed 42
+python scripts/run_stage1.py --model yolo --aug on --epochs 100 --imgsz 1088 \
+    --batch 16 --device cuda:0 --seed 42
 
-# YOLO – Augmentierung AUS (Fairness-Baseline)
-python scripts/run_stage1.py \
-    --model yolo \
-    --aug off \
-    --epochs 100 \
-    --imgsz 1088 \
-    --batch 16 \
-    --device cuda:0 \
-    --seed 42
-
-# YOLO – Synth-Pretrain-Variante (initialisiert mit vorhandenem Checkpoint):
-# Augmentierung AN
-python scripts/run_stage1.py \
-    --model yolo \
-    --aug on \
-    --epochs 100 \
-    --imgsz 1088 \
-    --batch 16 \
-    --device cuda:0 \
-    --seed 42 \
-    --weights results/results/yolo_runs/C_synth_pretrain_real_finetune/weights/best.pt
-
-# YOLO – Synth-Pretrain-Variante, Augmentierung AUS
-python scripts/run_stage1.py \
-    --model yolo \
-    --aug off \
-    --epochs 100 \
-    --imgsz 1088 \
-    --batch 16 \
-    --device cuda:0 \
-    --seed 42 \
-    --weights results/results/yolo_runs/C_synth_pretrain_real_finetune/weights/best.pt
+python scripts/run_stage1.py --model mask2former --aug on --epochs 100 --batch 8 \
+    --lr 1e-4 --freeze-backbone-epochs 20 --device cuda:0 --seed 42
 ```
 
-### Mask2Former (Swin-T)
+### Ablation 1 — Augmentierung AUS (beide Modelle, sonst identisch)
 
 ```bash
-# Mask2Former – Augmentierung AN
-python scripts/run_stage1.py \
-    --model mask2former \
-    --aug on \
-    --epochs 100 \
-    --batch 8 \
-    --lr 1e-4 \
-    --freeze-backbone-epochs 20 \
-    --device cuda:0 \
-    --seed 42
+python scripts/run_stage1.py --model yolo --aug off --epochs 100 --imgsz 1088 \
+    --batch 16 --device cuda:0 --seed 42
 
-# Mask2Former – Augmentierung AUS (Fairness-Baseline)
-python scripts/run_stage1.py \
-    --model mask2former \
-    --aug off \
-    --epochs 100 \
-    --batch 8 \
-    --lr 1e-4 \
-    --freeze-backbone-epochs 20 \
-    --device cuda:0 \
-    --seed 42
+python scripts/run_stage1.py --model mask2former --aug off --epochs 100 --batch 8 \
+    --lr 1e-4 --freeze-backbone-epochs 20 --device cuda:0 --seed 42
+```
 
-# Mask2Former – Augmentierung AN, kleinere Lernrate für Feinabstimmung
-python scripts/run_stage1.py \
-    --model mask2former \
-    --aug on \
-    --epochs 100 \
-    --batch 8 \
-    --lr 5e-5 \
-    --freeze-backbone-epochs 30 \
-    --device cuda:0 \
-    --seed 42
+### Ablation 2 — Synthetisches Vortraining (nur YOLO), leakage-frei
 
-# Mask2Former – Augmentierung AUS, kleinere Lernrate
-python scripts/run_stage1.py \
-    --model mask2former \
-    --aug off \
-    --epochs 100 \
-    --batch 8 \
-    --lr 5e-5 \
-    --freeze-backbone-epochs 30 \
-    --device cuda:0 \
-    --seed 42
+Initialisierung aus `A_synth_only` (rein synthetisch, hat nie ein reales Tool gesehen).
+NICHT `C_synth_pretrain_real_finetune` verwenden: dieser Checkpoint wurde unter dem alten Split
+real feingetunt und sah dabei tool98 — das ist jetzt das Testset (Leakage).
+
+```bash
+python scripts/run_stage1.py --model yolo --aug on --epochs 100 --imgsz 1088 \
+    --batch 16 --device cuda:0 --seed 42 \
+    --weights results/results/yolo_runs/A_synth_only/weights/best.pt
+
+python scripts/run_stage1.py --model yolo --aug off --epochs 100 --imgsz 1088 \
+    --batch 16 --device cuda:0 --seed 42 \
+    --weights results/results/yolo_runs/A_synth_only/weights/best.pt
+```
+
+### Optionaler Mask2Former-Lernraten-Check (nur zur Konfig-Wahl; berichte NUR die bessere)
+
+```bash
+python scripts/run_stage1.py --model mask2former --aug on --epochs 100 --batch 8 \
+    --lr 5e-5 --freeze-backbone-epochs 30 --device cuda:0 --seed 42
+```
+
+### Optionaler Eval-only: Sim-to-Real-Gap (Strategie A, kein Neutraining)
+
+Bewertet den vorhandenen synth-only-Checkpoint auf dem korrigierten Testsplit (tool98).
+A_synth_only wurde @640 px trainiert -> indikativ (Auflösung im Paper als Fußnote).
+
+```bash
+python scripts/eval_stage1_checkpoint.py --model yolo \
+    --weights results/results/yolo_runs/A_synth_only/weights/best.pt \
+    --imgsz 640 --device cuda:0 --tag strategyA_synth_only
 ```
 
 ### Lokale Smoke-Tests (MPS / CPU)
