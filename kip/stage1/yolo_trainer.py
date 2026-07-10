@@ -195,7 +195,10 @@ class YoloSegTrainer:
                 predictions.append(
                     {
                         "image_id": img_info["id"],
-                        "category_id": int(cls.item()),
+                        # YOLO cls is 0-based; COCO GT categories are 1-based
+                        # (yolo_to_coco: category_id = cls + 1) -> shift by +1,
+                        # sonst matcht pycocotools die falsche Kategorie -> mAP~0.
+                        "category_id": int(cls.item()) + 1,
                         "bbox": [x1, y1, float(x2 - x1), float(y2 - y1)],
                         "segmentation": [polygon],
                         "score": float(conf.item()),
