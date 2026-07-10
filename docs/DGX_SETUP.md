@@ -46,8 +46,8 @@ pip install -e .
 
 ```bash
 pytest tests/ -q                      # muss 84/84 grün sein
-python scripts/apply_stage1_split.py  # setzt/prüft tool-basierten Split (test=tool98, val=tool03); idempotent
-                                      # Erwartung: train=803 / val=101 / test=58, tool-disjunkt OK,
+python scripts/apply_stage1_split.py  # setzt/prüft tool-basierten Split (test=tool98+tool10, val=tool03); idempotent
+                                      # Erwartung: train=713 / val=101 / test=148, tool-disjunkt OK,
                                       # test deckt alle 6 realen Klassen (bearing_plate, drive, spindle,
                                       # gearbox, motor, shaft) -> keine "trainiert, aber nie getestet"-Klasse
 python scripts/prepare_stage1_coco.py # train/val/test -> COCO, pycocotools-Validierung OK

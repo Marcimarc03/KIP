@@ -27,7 +27,7 @@ pip install -e .
 
 ```bash
 pytest tests/ -q                       # 84/84 grün
-python scripts/apply_stage1_split.py   # Erwartung: train=803 / val=101 / test=58, tool-disjunkt,
+python scripts/apply_stage1_split.py   # Erwartung: train=713 / val=101 / test=148, tool-disjunkt,
                                        # test deckt alle 6 realen Klassen (keine train-only-Klasse)
 python scripts/prepare_stage1_coco.py  # train/val/test -> COCO, pycocotools-Validierung OK
 python scripts/build_manifest.py --bgad data/BGAD --out results/defect_detection/manifest --missing-mask-policy normal

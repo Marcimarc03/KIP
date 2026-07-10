@@ -4,19 +4,25 @@
 Reorganises images/ and labels/ so that every tool ends up in its target split,
 regardless of where the files currently sit. Running twice is a no-op.
 
-Default target (Option A, 2026-07-09):
-    test = {tool98}   -> only tool with all 6 real classes present
-    val  = {tool03}   -> unchanged from delivered split
-    train= everything else (incl. tool10, which moves back from test)
+Default target (Option B, 2026-07-10):
+    test = {tool98, tool10}  -> tool98 covers all 6 real classes (close-up regime),
+                                tool10 adds the overview regime so drive/gearbox/motor
+                                are measurable at normal scale (not only as small
+                                close-up fragments). ~148 test images, both regimes.
+    val  = {tool03}          -> unchanged from delivered split
+    train= everything else   -> ~713 images
 
-Rationale: the delivered split (train / val=tool03 / test=tool10) never tested
-bearing_plate and shaft (they exist only on tool01/98/99). tool98 is the single
-tool covering all 6 real classes, so it becomes the test set; tool99 stays in
-train so bearing_plate/shaft remain trainable. See docs + seminar notes.
+Rationale: the delivered split (test=tool10) never tested bearing_plate/shaft
+(only on tool01/98/99). tool98 is the single tool with all 6 classes, but it is a
+close-up tool -> peripheral components (bevel_gear_drive, gearbox_housing) are too
+small to be detected there (AP~0 for both models). Adding tool10 (overview) makes
+every class measurable under deployment-like conditions and covers 2 physical
+specimens. Split stays leakage-free; train still covers all 6 classes
+(bearing_plate via tool99, shaft via tool01+tool99). See docs/split_begruendung.md.
 
 Usage:
     python scripts/apply_stage1_split.py [--dataset ...] [--dry-run]
-    python scripts/apply_stage1_split.py --test-tools tool98 --val-tools tool03
+    python scripts/apply_stage1_split.py --test-tools tool98 tool10 --val-tools tool03
 """
 from __future__ import annotations
 
@@ -39,7 +45,7 @@ def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--dataset",
                    default=str(_ROOT / "data" / "object_segmentation_real_v3_1088"))
-    p.add_argument("--test-tools", nargs="+", default=["tool98"])
+    p.add_argument("--test-tools", nargs="+", default=["tool98", "tool10"])
     p.add_argument("--val-tools", nargs="+", default=["tool03"])
     p.add_argument("--dry-run", action="store_true",
                    help="only report planned moves, change nothing")
