@@ -33,13 +33,13 @@ class PatchCore(AnomalyMethod):
         if bank.shape[0] > 10000 and 0 < ratio < 1:
             idx = torch.randperm(bank.shape[0])[: max(1, int(bank.shape[0] * ratio))]
             bank = bank[idx]
-        self.memory = bank
+        self.memory = bank.to(self.device)           # keep memory bank on GPU
 
     @torch.no_grad()
     def score(self, tile) -> tuple[np.ndarray, float]:
         emb, (gh, gw) = self._embed(tile)
-        d = torch.cdist(emb, self.memory)            # CPU cdist (Risk-7)
-        patch = d.min(dim=1).values.reshape(gh, gw)
+        d = torch.cdist(emb.to(self.device), self.memory)   # nearest-neighbour on GPU
+        patch = d.min(dim=1).values.reshape(gh, gw).cpu()
         amap = F.interpolate(patch[None, None].float(), size=tile.shape[:2],
                              mode="bilinear", align_corners=False)[0, 0].numpy()
         q = getattr(self.cfg, "fg_quantile", 0.98)
