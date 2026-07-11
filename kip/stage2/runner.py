@@ -66,6 +66,8 @@ def _prepare(manifest: pd.DataFrame, ckpt: Path, work: int, device: str, imgsz: 
                           interpolation=cv2.INTER_NEAREST)
         items.append({"crop": crop_r, "gt": (gt_r > 0).astype(np.uint8),
                       "label": int(row["defect_status"] == "defect"),
+                      "image": row["image"],
+                      "defect_types": row["defect_types"] if isinstance(row["defect_types"], str) else "",
                       "tool": row["tool_id"], "split": row["split"]})
     return items, crop_failures
 
@@ -109,6 +111,7 @@ def run_stage2(cfg: Stage2Config, ckpt: Path = DEFAULT_CKPT,
 
     per_fold, pooled_labels, pooled_scores = [], [], []
     pix_gts, pix_amaps = [], []
+    records = []
     for fold in folds:
         if cfg.split != "fixed":
             assert_no_tool_leakage(fold, manifest)   # skipped only for fixed (Risk/WP1 note)
@@ -137,16 +140,30 @@ def run_stage2(cfg: Stage2Config, ckpt: Path = DEFAULT_CKPT,
         good_ref = [_score_image(method, it["crop"], tcfg, work, cfg.fg_quantile)[1]
                     for it in good_tr]
         labels, scores = [], []
+        fold_recs, fold_gts, fold_amaps = [], [], []
         for it in te:
             amap, s = _score_image(method, it["crop"], tcfg, work, cfg.fg_quantile)
             labels.append(it["label"]); scores.append(s)
             pix_gts.append(it["gt"]); pix_amaps.append(amap)
+            fold_gts.append(it["gt"]); fold_amaps.append(amap)
+            fold_recs.append({"image": it["image"], "tool": it["tool"],
+                              "label": it["label"], "defect_types": it["defect_types"],
+                              "raw_score": s, "fold": fold.name})
         norm = normalize_fold_scores(scores, good_ref)
         pooled_labels.extend(labels); pooled_scores.extend(norm.tolist())
+        for rec, ns in zip(fold_recs, norm.tolist()):
+            rec["norm_score"] = ns
+        records.extend(fold_recs)
+        fold_dp = [(g, a) for g, a in zip(fold_gts, fold_amaps) if g.max() > 0]
         per_fold.append({
             "fold": fold.name, "held_out_tools": fold.held_out_tools,
             "n_test": len(te), "n_defect": int(sum(labels)),
             "image_auroc": image_auroc(labels, scores),
+            "pixel_auroc": (pixel_auroc(np.concatenate([g.ravel() for g in fold_gts]),
+                                        np.concatenate([a.ravel() for a in fold_amaps]))
+                            if fold_gts else None),
+            "pixel_aupro": (aupro([g for g, _ in fold_dp], [a for _, a in fold_dp])
+                            if fold_dp else None),
         })
 
     # pooled metrics
@@ -183,6 +200,17 @@ def run_stage2(cfg: Stage2Config, ckpt: Path = DEFAULT_CKPT,
         "metrics": {"pooled": pooled, "per_fold": per_fold},
     }
     save_run(run_dir, cfg, metrics, manifest_path=manifest_path, hardware=hardware_info())
+    # persist per-image scores + anomaly maps for post-hoc analysis (bootstrap-CI,
+    # defect-type breakdown, overlays) WITHOUT a DGX rerun
+    pred_dir = run_dir / "predictions"
+    pred_dir.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(records).to_csv(pred_dir / "scores.csv", index=False)
+    np.savez_compressed(
+        pred_dir / "amaps.npz",
+        amaps=(np.stack(pix_amaps).astype(np.float32) if pix_amaps else np.zeros((0, work, work), np.float32)),
+        gts=(np.stack(pix_gts).astype(np.uint8) if pix_gts else np.zeros((0, work, work), np.uint8)),
+        images=np.array([r["image"] for r in records]),
+    )
     append_summary(OUT_BASE, {
         "run_id": run_dir.name, "stage": 2, "model": cfg.method,
         "augmentation": cfg.augmentation, "seed": cfg.seed, "smoke": cfg.smoke,

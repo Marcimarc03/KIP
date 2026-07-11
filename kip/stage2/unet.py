@@ -53,25 +53,38 @@ class UNetSupervised:
         return bce + _dice_loss(logits, target)
 
     def fit_supervised(self, train_tiles, train_masks, val=None) -> None:
-        X = torch.stack([self._x(t) for t in train_tiles])
-        Y = torch.stack([self._y(m) for m in train_masks])
-        # oversample positive tiles to counter extreme imbalance (Risk-6)
-        pos = np.array([float(y.sum() > 0) for y in Y])
+        from kip.data.augment import stage2_augment_pipeline
+        # mask-consistent augmentation ONLY for this supervised method; the
+        # unsupervised methods must NOT augment their good-only training set
+        # (that would widen the "normal" manifold and reduce defect sensitivity).
+        aug = stage2_augment_pipeline(getattr(self.cfg, "augmentation", False))
+        # oversample positive tiles to counter extreme imbalance (Risk-6);
+        # weights from the un-augmented masks (augmentation-invariant)
+        Y0 = [self._y(m) for m in train_masks]
+        pos = np.array([float(y.sum() > 0) for y in Y0])
         weights = np.where(pos > 0, 3.0, 1.0)
         prob = weights / weights.sum()
-        pix = Y.mean().clamp(min=1e-4)
+        pix = torch.stack(Y0).mean().clamp(min=1e-4)
         pos_weight = ((1 - pix) / pix).to(self.device)
         opt = torch.optim.Adam(self.model.parameters(), lr=getattr(self.cfg, "lr", 1e-3))
         epochs = getattr(self.cfg, "epochs", 50)
-        bs = max(1, min(getattr(self.cfg, "batch", 8), X.shape[0]))
+        n = len(train_tiles)
+        bs = max(1, min(getattr(self.cfg, "batch", 8), n))
         rng = np.random.default_rng(getattr(self.cfg, "seed", 42))
-        n = X.shape[0]
         self.model.train()
         for _ in range(epochs):
             for _ in range(max(1, n // bs)):
                 idx = rng.choice(n, size=bs, p=prob)
-                xb = X[idx].to(self.device)
-                yb = Y[idx].to(self.device)
+                xb, yb = [], []
+                for j in idx:
+                    img, msk = train_tiles[j], train_masks[j]
+                    if aug is not None:                 # fresh augmentation per epoch
+                        a = aug(image=img, mask=msk)
+                        img, msk = a["image"], a["mask"]
+                    xb.append(self._x(img))
+                    yb.append(self._y(msk))
+                xb = torch.stack(xb).to(self.device)
+                yb = torch.stack(yb).to(self.device)
                 opt.zero_grad()
                 loss = self._loss(self.model(xb), yb, pos_weight)
                 loss.backward()
