@@ -118,15 +118,26 @@ for split in fixed loto; do for m in patchcore padim ae unet; do
 done; done
 ```
 
-Volltraining (CUDA-Server; NIE als ausgeführt behauptet):
+Volltraining (CUDA-Server) — komplett per Skript (ausgeführt 2026-07-12, Seed 42):
 ```bash
-python scripts/run_stage2.py --method patchcore --split loto --tile 256 --device cuda:0 --seed 42
-python scripts/run_stage2.py --method padim     --split loto --tile 256 --device cuda:0 --seed 42
-python scripts/run_stage2.py --method ae        --split loto --tile 256 --epochs 200 --device cuda:0 --seed 42
-python scripts/run_stage2.py --method unet --aug on --split loto --tile 256 --epochs 300 --loss bce_dice --device cuda:0 --seed 42
+tmux new -s s2
+bash scripts/run_stage2_all.sh
+```
+Das Skript rechnet sequenziell (Ausgaben nur unter `results/defect_detection/`):
+- **LOTO (primär, tool-disjunkt):** PatchCore, PaDiM, ConvAE (`--epochs 200`),
+  U-Net (`--aug on --epochs 300 --loss bce_dice`); zusätzlich U-Net (`--aug off`)
+  als Augmentierungs-Ablation.
+- **fixed (Sekundär-Anker, verletzt Tool-Disjunktheit by design):** dieselben vier Methoden.
+
+Augmentierung ausschließlich beim supervised U-Net (die unsupervised-Verfahren dürfen
+ihre Gut-Trainingsmenge nicht augmentieren). Einzelaufruf-Muster (falls nur eine Methode):
+```bash
+python scripts/run_stage2.py --method {patchcore|padim|ae|unet} --split {loto|fixed} \
+    --tile 256 --device cuda:0 --seed 42 [--aug on --epochs 300 --loss bce_dice]
 ```
 `--missing-mask-policy {normal|unlabeled|error}` steuert die Annahme "Bild ohne Maske = Gutteil".
-LOTO ist primär; `--split fixed` nutzt den vorhandenen train/val-Split (sekundär).
+Nur `smoke=False`-Läufe sind berichtbar. LOTO ist primär; `--split fixed` nutzt den vorhandenen
+train/val-Split (sekundär, optimistisch). Aggregat aller Läufe: `results/defect_detection/summary.csv`.
 
 ## Gesamter Smoke-Durchlauf
 ```bash

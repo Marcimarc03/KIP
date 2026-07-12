@@ -1,0 +1,9 @@
+image,tool,label,defect_types,raw_score,fold,norm_score
+data/BGAD/val/base_images/tool02_bevel_gear_spindle_closeup_0006_isolated.jpg,tool02,0,,0.7842721939086914,fixed,6.0363776036283046
+data/BGAD/val/base_images/tool02_bevel_gear_spindle_closeup_0011_isolated.jpg,tool02,1,adhesive_wear,0.8554129004478455,fixed,16.28886077153515
+data/BGAD/val/base_images/tool03_bevel_gear_spindle_closeup_0003_isolated.jpg,tool03,1,tooth_end_rupture,0.8453977108001709,fixed,14.845516049766529
+data/BGAD/val/base_images/tool08_bevel_gear_spindle_closeup_0014_isolated.jpg,tool08,1,fretting_corrosion,0.8901804089546204,fixed,21.299399928319946
+data/BGAD/val/base_images/tool09_bevel_gear_spindle_closeup_0012_isolated.jpg,tool09,1,pitting;tooth_end_rupture,0.8529602885246277,fixed,15.935401216753268
+data/BGAD/val/base_images/tool10_bevel_gear_spindle_closeup_0008_isolated_v2.jpg,tool10,1,polishing_wear,0.8468892574310303,fixed,15.060471136255831
+data/BGAD/val/base_images/tool97_bevel_gear_spindle_closeup_0004_isolated.jpg,tool97,0,,0.8134512901306152,fixed,10.241539562560481
+data/BGAD/val/base_images/tool99_bevel_gear_spindle_closeup_0003_isolated.jpg,tool99,0,,0.8699226379394531,fixed,18.379939798443328

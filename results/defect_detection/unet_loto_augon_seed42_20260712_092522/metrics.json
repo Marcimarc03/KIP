@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "run_id": "unet_loto_augon_seed42_20260712_092522",
+  "stage": 2,
+  "model": "unet",
+  "augmentation": true,
+  "seed": 42,
+  "smoke": false,
+  "device": "cuda:0",
+  "kip_version": "0.1.0",
+  "split": {
+    "scheme": "loto",
+    "n_folds": 7,
+    "test_set": "bgad_pooled"
+  },
+  "dataset": {
+    "n_images": 19,
+    "n_good": 8,
+    "n_defect": 11,
+    "missing_mask_policy": "normal",
+    "crop_failures": 0,
+    "work_size": 512,
+    "tile_size": 256
+  },
+  "metrics": {
+    "pooled": {
+      "image_auroc": 0.4090909090909091,
+      "image_f1": 0.785714285237245,
+      "image_f1_threshold": 0.31348735639943087,
+      "pixel_auroc": 0.731207189883683,
+      "pixel_aupro": 0.7579263546345851,
+      "pixel_f1": null,
+      "dice": 0.25463548609454223,
+      "iou": 0.15439736349151278
+    },
+    "per_fold": [
+      {
+        "fold": "loto_tool02",
+        "held_out_tools": [
+          "tool02"
+        ],
+        "n_test": 7,
+        "n_defect": 4,
+        "image_auroc": 0.8333333333333334,
+        "pixel_auroc": 0.7539454843441016,
+        "pixel_aupro": 0.8936747692839918
+      },
+      {
+        "fold": "loto_tool03",
+        "held_out_tools": [
+          "tool03"
+        ],
+        "n_test": 1,
+        "n_defect": 1,
+        "image_auroc": null,
+        "pixel_auroc": 0.928254744783471,
+        "pixel_aupro": 0.9729441827023659
+      },
+      {
+        "fold": "loto_tool08",
+        "held_out_tools": [
+          "tool08"
+        ],
+        "n_test": 2,
+        "n_defect": 2,
+        "image_auroc": null,
+        "pixel_auroc": 0.7090151869932101,
+        "pixel_aupro": 0.6771334853096574
+      },
+      {
+        "fold": "loto_tool09",
+        "held_out_tools": [
+          "tool09"
+        ],
+        "n_test": 2,
+        "n_defect": 2,
+        "image_auroc": null,
+        "pixel_auroc": 0.8173874053511021,
+        "pixel_aupro": 0.687874093535418
+      },
+      {
+        "fold": "loto_tool10",
+        "held_out_tools": [
+          "tool10"
+        ],
+        "n_test": 2,
+        "n_defect": 2,
+        "image_auroc": null,
+        "pixel_auroc": 0.6562735169611826,
+        "pixel_aupro": 0.7010205729129152
+      },
+      {
+        "fold": "loto_tool97",
+        "held_out_tools": [
+          "tool97"
+        ],
+        "n_test": 3,
+        "n_defect": 0,
+        "image_auroc": null,
+        "pixel_auroc": null,
+        "pixel_aupro": null
+      },
+      {
+        "fold": "loto_tool99",
+        "held_out_tools": [
+          "tool99"
+        ],
+        "n_test": 2,
+        "n_defect": 0,
+        "image_auroc": null,
+        "pixel_auroc": null,
+        "pixel_aupro": null
+      }
+    ]
+  },
+  "git_commit": "5f70c3d",
+  "timestamp_utc": "2026-07-12T09:25:22.293671+00:00"
+}

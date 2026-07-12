@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "run_id": "unet_fixed_augon_seed42_20260712_100937",
+  "stage": 2,
+  "model": "unet",
+  "augmentation": true,
+  "seed": 42,
+  "smoke": false,
+  "device": "cuda:0",
+  "kip_version": "0.1.0",
+  "split": {
+    "scheme": "fixed",
+    "n_folds": 1,
+    "test_set": "bgad_pooled"
+  },
+  "dataset": {
+    "n_images": 19,
+    "n_good": 8,
+    "n_defect": 11,
+    "missing_mask_policy": "normal",
+    "crop_failures": 0,
+    "work_size": 512,
+    "tile_size": 256
+  },
+  "metrics": {
+    "pooled": {
+      "image_auroc": 1.0,
+      "image_f1": 0.9999999995,
+      "image_f1_threshold": 9.941930548608056,
+      "pixel_auroc": 0.9105866106947194,
+      "pixel_aupro": 0.8854464891384225,
+      "pixel_f1": null,
+      "dice": 0.500701266209213,
+      "iou": 0.33618945605667105
+    },
+    "per_fold": [
+      {
+        "fold": "fixed",
+        "held_out_tools": [],
+        "n_test": 8,
+        "n_defect": 5,
+        "image_auroc": 1.0,
+        "pixel_auroc": 0.9105866106947194,
+        "pixel_aupro": 0.8854464891384225
+      }
+    ]
+  },
+  "git_commit": "5f70c3d",
+  "timestamp_utc": "2026-07-12T10:09:37.244015+00:00"
+}
