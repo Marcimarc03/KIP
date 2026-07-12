@@ -131,15 +131,15 @@ def aupro(
     all_scores = np.concatenate([neg_arr, reg_arr])
     thresholds = np.unique(all_scores)
 
-    fprs, pros = [], []
-    for thr in thresholds:
-        fpr = float((neg_arr >= thr).mean())
-        pro = float((reg_arr >= thr).mean())
-        fprs.append(fpr)
-        pros.append(pro)
-
-    fprs_arr = np.array(fprs)
-    pros_arr = np.array(pros)
+    # Vectorised PRO curve: identical to computing (neg_arr >= thr).mean() and
+    # (reg_arr >= thr).mean() for every threshold, but via searchsorted on the
+    # sorted arrays instead of an O(n_thresholds * n_pixels) Python loop.
+    neg_sorted = np.sort(neg_arr)
+    reg_sorted = np.sort(reg_arr)
+    n_neg = neg_sorted.size
+    n_reg = reg_sorted.size
+    fprs_arr = (n_neg - np.searchsorted(neg_sorted, thresholds, side="left")) / n_neg
+    pros_arr = (n_reg - np.searchsorted(reg_sorted, thresholds, side="left")) / n_reg
 
     # Sort by FPR
     order = np.argsort(fprs_arr)
