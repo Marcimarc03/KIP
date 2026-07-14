@@ -26,7 +26,7 @@ class TilingConfig:
 
 @dataclass
 class Stage1Config:
-    model: Literal["yolo", "mask2former"] = "yolo"
+    model: Literal["yolo", "yolo26", "mask2former", "maskrcnn"] = "yolo"
     augmentation: bool = True
     epochs: int = 100
     imgsz: int = 1088

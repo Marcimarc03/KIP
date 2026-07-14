@@ -71,7 +71,8 @@ def _parse_args(argv=None) -> argparse.Namespace:
         description="Stage-1 component-segmentation benchmark",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    p.add_argument("--model", choices=["yolo", "mask2former"], required=True)
+    p.add_argument("--model", choices=["yolo", "yolo26", "mask2former", "maskrcnn"],
+                   required=True)
     p.add_argument("--aug", choices=["on", "off"], default="on",
                    help="Data augmentation toggle")
     p.add_argument("--smoke", action="store_true",
@@ -101,19 +102,25 @@ def _parse_args(argv=None) -> argparse.Namespace:
 def main(argv=None) -> None:
     args = _parse_args(argv)
 
+    # YOLO26 reuses the Ultralytics YoloSegTrainer; only the default weight differs.
+    if args.model == "yolo26" and args.weights == "yolo11n-seg.pt":
+        args.weights = "yolo26n-seg.pt"
+
     # ------------------------------------------------------------------
     # Defaults per smoke / full / model
     # ------------------------------------------------------------------
     aug_on = args.aug == "on"
+    # YOLO family runs at 1088 (Ultralytics recipe); M2F/Mask R-CNN at 800.
+    yolo_family = args.model in ("yolo", "yolo26")
 
     if args.smoke:
         epochs = args.epochs or 2
         imgsz = args.imgsz or 320
-        batch = args.batch or (4 if args.model == "yolo" else 2)
+        batch = args.batch or (4 if yolo_family else 2)
     else:
         epochs = args.epochs or 100
-        imgsz = args.imgsz or (1088 if args.model == "yolo" else 800)
-        batch = args.batch or (16 if args.model == "yolo" else 8)
+        imgsz = args.imgsz or (1088 if yolo_family else 800)
+        batch = args.batch or (16 if yolo_family else 8)
 
     cfg = Stage1Config(
         model=args.model,
@@ -165,7 +172,7 @@ def main(argv=None) -> None:
     pred_json = run_dir / "predictions" / "coco_predictions.json"
     ckpt_path = None
 
-    if args.model == "yolo":
+    if args.model in ("yolo", "yolo26"):
         from kip.stage1.yolo_trainer import YoloSegTrainer
 
         trainer = YoloSegTrainer(
@@ -209,6 +216,30 @@ def main(argv=None) -> None:
         t_infer = time.time()
         trainer.predict_to_coco(
             ckpt_dir=ckpt_path,
+            coco_gt_json=_TEST_JSON,
+            images_dir=_IMAGES_TEST,
+            out_json=pred_json,
+        )
+        infer_ms = (time.time() - t_infer) / n_test * 1000
+
+    elif args.model == "maskrcnn":
+        from kip.stage1.maskrcnn_trainer import MaskRCNNTrainer
+
+        trainer = MaskRCNNTrainer(
+            cfg=cfg,
+            coco_train_json=_TRAIN_JSON,
+            coco_val_json=_VAL_JSON,
+            images_dir=_IMAGES_TRAIN,
+            run_dir=run_dir,
+        )
+        ckpt_path = trainer.train()
+        train_seconds = time.time() - t_train_start
+        print(f"[stage1] Mask R-CNN training done in {train_seconds:.1f}s")
+
+        # Predict on test split
+        t_infer = time.time()
+        trainer.predict_to_coco(
+            ckpt=ckpt_path,
             coco_gt_json=_TEST_JSON,
             images_dir=_IMAGES_TEST,
             out_json=pred_json,
