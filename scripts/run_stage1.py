@@ -92,6 +92,9 @@ def _parse_args(argv=None) -> argparse.Namespace:
                    help="Epochs to keep Swin backbone frozen (Mask2Former only)")
     p.add_argument("--weights", type=str, default="yolo11n-seg.pt",
                    help="YOLO initial weights path or name")
+    p.add_argument("--tag", type=str, default="",
+                   help="Optional run-name suffix to disambiguate ablations "
+                        "(e.g. synthpretrain, realonly). Recorded in metrics.")
     return p.parse_args(argv)
 
 
@@ -148,7 +151,11 @@ def main(argv=None) -> None:
     # ------------------------------------------------------------------
     # Create output run directory
     # ------------------------------------------------------------------
-    run_name = f"{args.model}_aug{args.aug}"
+    # init_weights is only meaningful for the YOLO family (M2F/Mask R-CNN use
+    # their own pretrained backbones); recorded so the synth-vs-real ablation
+    # is unambiguously traceable in metrics.json / summary.csv.
+    init_weights = args.weights if args.model in ("yolo", "yolo26") else None
+    run_name = f"{args.model}_aug{args.aug}" + (f"_{args.tag}" if args.tag else "")
     run_dir = create_run_dir(_RESULTS_BASE, run_name)
     run_id = run_dir.name
     print(f"[stage1] run_id: {run_id}")
@@ -269,6 +276,8 @@ def main(argv=None) -> None:
         "run_id": run_id,
         "stage": 1,
         "model": args.model,
+        "tag": args.tag,
+        "init_weights": init_weights,
         "augmentation": aug_on,
         "seed": cfg.seed,
         "smoke": cfg.smoke,
@@ -312,6 +321,8 @@ def main(argv=None) -> None:
         "run_id": run_id,
         "stage": 1,
         "model": args.model,
+        "tag": args.tag,
+        "init_weights": init_weights,
         "augmentation": aug_on,
         "seed": cfg.seed,
         "smoke": cfg.smoke,
