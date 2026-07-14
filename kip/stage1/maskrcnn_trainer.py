@@ -149,19 +149,37 @@ class MaskRCNNTrainer:
         model = self._build()
         model.train()
         params = [p for p in model.parameters() if p.requires_grad]
-        opt = torch.optim.SGD(params, lr=0.005, momentum=0.9, weight_decay=5e-4)
-
-        for _epoch in range(self.cfg.epochs):
-            for imgs, targets in loader:
-                imgs = [im.to(self.device) for im in imgs]
-                targets = [{k: v.to(self.device) for k, v in t.items()} for t in targets]
-                loss = sum(model(imgs, targets).values())
-                opt.zero_grad()
-                loss.backward()
-                opt.step()
+        # lr nach torchvision-Referenz auf batch skaliert (0.02 @ batch16 -> ~0.0025 @ batch2)
+        base_lr = 0.0025
+        opt = torch.optim.SGD(params, lr=base_lr, momentum=0.9, weight_decay=5e-4)
 
         ckpt = self.run_dir / "weights" / "maskrcnn.pt"
         ckpt.parent.mkdir(parents=True, exist_ok=True)
+        n_batches = max(1, len(loader))
+
+        for epoch in range(self.cfg.epochs):
+            running = 0.0
+            for it, (imgs, targets) in enumerate(loader):
+                # lineares LR-Warmup ueber die erste Epoche (Divergenzschutz)
+                if epoch == 0:
+                    for g in opt.param_groups:
+                        g["lr"] = base_lr * min(1.0, (it + 1) / n_batches)
+                imgs = [im.to(self.device) for im in imgs]
+                targets = [{k: v.to(self.device) for k, v in t.items()} for t in targets]
+                loss = sum(model(imgs, targets).values())
+                if not torch.isfinite(loss):
+                    raise RuntimeError(
+                        f"[maskrcnn] nicht-finiter Loss (epoch {epoch}, iter {it}) -> Abbruch"
+                    )
+                opt.zero_grad()
+                loss.backward()
+                opt.step()
+                running += float(loss.item())
+            print(f"[maskrcnn] epoch {epoch + 1}/{self.cfg.epochs}  "
+                  f"mean_loss={running / n_batches:.4f}", flush=True)
+            if (epoch + 1) % 10 == 0:           # periodischer Checkpoint gegen Crash-Verlust
+                torch.save(model.state_dict(), ckpt)
+
         torch.save(model.state_dict(), ckpt)
         self._model = model
         return ckpt

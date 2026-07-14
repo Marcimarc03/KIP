@@ -327,6 +327,7 @@ def main(argv=None) -> None:
         "seed": cfg.seed,
         "smoke": cfg.smoke,
         "split_scheme": "fixed",
+        "n_test": n_test,
         "device": cfg.device,
         # Flat metric keys
         "bbox_map50": metrics["bbox_map50"],
