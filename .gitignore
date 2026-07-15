@@ -4,3 +4,7 @@ __pycache__/
 *.safetensors
 # Grosse Stage-2 Heatmap-Maps (aus metrics.json/scores.csv rekonstruierbar; nicht versionieren)
 *.npz
+# Grosse Stage-1 Prediction-Dumps (>100 MB, aus Checkpoints reproduzierbar; nicht versionieren)
+coco_predictions.json
+# Modellgewichte
+*.pt
