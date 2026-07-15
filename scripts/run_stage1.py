@@ -20,8 +20,10 @@ python scripts/run_stage1.py --model yolo --aug on --epochs 100 --imgsz 1088 \\
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
+import re
 import sys
 import time
 from dataclasses import asdict
@@ -60,6 +62,31 @@ _IMAGES_TRAIN = _DATA_ROOT / "images" / "train"
 _IMAGES_VAL = _DATA_ROOT / "images" / "val"
 _IMAGES_TEST = _DATA_ROOT / "images" / "test"
 _RESULTS_BASE = _ROOT / "results" / "component_benchmark"
+
+
+def _split_fingerprint(test_json: Path) -> dict:
+    """Provenance so multi-seed runs are provably comparable across machines.
+
+    Records exactly which test set a run was evaluated on: image count, tool set,
+    a content hash of test.json, and how many of the 9 nominal classes the test
+    GT actually covers (pycocotools averages mAP only over present classes).
+    """
+    raw = test_json.read_bytes()
+    d = json.loads(raw)
+    tools = sorted({
+        re.match(r"(tool\d+)", im["file_name"]).group(1)
+        for im in d["images"]
+        if re.match(r"(tool\d+)", im["file_name"])
+    })
+    test_cats = sorted({a["category_id"] for a in d["annotations"]})
+    return {
+        "n_test": len(d["images"]),
+        "test_tools": tools,
+        "test_json_sha256": hashlib.sha256(raw).hexdigest()[:16],
+        "n_classes_total": len(d["categories"]),
+        "n_classes_in_test_gt": len(test_cats),
+        "test_category_ids": test_cats,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -170,6 +197,18 @@ def main(argv=None) -> None:
     n_train = _count(_TRAIN_JSON)
     n_val = _count(_VAL_JSON)
     n_test = _count(_TEST_JSON)
+
+    # Split fingerprint + environment -> makes multi-seed runs provably comparable.
+    fp = _split_fingerprint(_TEST_JSON)
+    scheme = ("tool_disjoint_" + "+".join(fp["test_tools"])) if fp["test_tools"] else "unknown"
+    import torch as _torch
+    kip_workers = int(os.environ.get("KIP_WORKERS", "8"))
+    env_info = {"kip_workers": kip_workers, "torch": _torch.__version__}
+    try:
+        import ultralytics as _ultra
+        env_info["ultralytics"] = _ultra.__version__
+    except Exception:
+        env_info["ultralytics"] = None
 
     # ------------------------------------------------------------------
     # Train
@@ -282,10 +321,12 @@ def main(argv=None) -> None:
         "seed": cfg.seed,
         "smoke": cfg.smoke,
         "device": cfg.device,
+        "environment": env_info,
         "split": {
-            "scheme": "fixed",
+            "scheme": scheme,
             "n_folds": 1,
             "test_set": "real_v3/test",
+            "fingerprint": fp,
         },
         "dataset": {
             "n_train": n_train,
@@ -326,8 +367,12 @@ def main(argv=None) -> None:
         "augmentation": aug_on,
         "seed": cfg.seed,
         "smoke": cfg.smoke,
-        "split_scheme": "fixed",
+        "split_scheme": scheme,
         "n_test": n_test,
+        "test_tools": "+".join(fp["test_tools"]),
+        "test_sha": fp["test_json_sha256"],
+        "class_cov": f"{fp['n_classes_in_test_gt']}/{fp['n_classes_total']}",
+        "workers": kip_workers,
         "device": cfg.device,
         # Flat metric keys
         "bbox_map50": metrics["bbox_map50"],
