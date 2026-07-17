@@ -1,0 +1,344 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] You passed `num_labels=9` which is incompatible to the `id2label` map of length `80`.
+[stage1] run_id: mask2former_augoff_20260710_140055
+[stage1] run_dir: /workspace/blum/KIP/results/component_benchmark/mask2former_augoff_20260710_140055
+Loading weights:   0%|          | 0/554 [00:00<?, ?it/s]Loading weights:  51%|█████▏    | 285/554 [00:00<00:00, 2837.19it/s]Loading weights: 100%|██████████| 554/554 [00:00<00:00, 3397.47it/s]
+[transformers] [1mMask2FormerForUniversalSegmentation LOAD REPORT[0m from: facebook/mask2former-swin-tiny-coco-instance
+Key                                                                                                                                | Status     |                                                                                         
+-----------------------------------------------------------------------------------------------------------------------------------+------------+-----------------------------------------------------------------------------------------
+model.pixel_level_module.encoder.swin.encoder.layers.{0, 1, 2, 3}.blocks.{0, 1, 2, 3, 4, 5}.attention.self.relative_position_index | UNEXPECTED |                                                                                         
+model.pixel_level_module.encoder.swin.layernorm.bias                                                                               | MISSING    |                                                                                         
+model.pixel_level_module.encoder.swin.layernorm.weight                                                                             | MISSING    |                                                                                         
+criterion.empty_weight                                                                                                             | MISMATCH   | Reinit due to size mismatch - ckpt: torch.Size([81]) vs model:torch.Size([10])          
+class_predictor.bias                                                                                                               | MISMATCH   | Reinit due to size mismatch - ckpt: torch.Size([81]) vs model:torch.Size([10])          
+class_predictor.weight                                                                                                             | MISMATCH   | Reinit due to size mismatch - ckpt: torch.Size([81, 256]) vs model:torch.Size([10, 256])
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+- MISMATCH:	ckpt weights were loaded, but they did not match the original empty weight shapes.
+/workspace/blum/venv-kip/lib/python3.12/site-packages/torch/nn/functional.py:3555: UserWarning: nll_loss2d_forward_out_cuda_template does not have a deterministic implementation, but you set 'torch.use_deterministic_algorithms(True, warn_only=True)'. You can file an issue at https://github.com/pytorch/pytorch/issues to help us prioritize adding deterministic support for this operation. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/Context.cpp:186.)
+  return torch._C._nn.cross_entropy_loss(
+/workspace/blum/venv-kip/lib/python3.12/site-packages/torch/autograd/graph.py:979: UserWarning: grid_sampler_2d_backward_cuda does not have a deterministic implementation, but you set 'torch.use_deterministic_algorithms(True, warn_only=True)'. You can file an issue at https://github.com/pytorch/pytorch/issues to help us prioritize adding deterministic support for this operation. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/Context.cpp:186.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[M2F epoch 1/100] loss=19.8868
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.40it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.39it/s]
+[M2F epoch 2/100] loss=7.0334
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.17it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.17it/s]
+[M2F epoch 3/100] loss=4.2409
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.30s/it]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.30s/it]
+[M2F epoch 4/100] loss=3.4259
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.75it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.75it/s]
+[M2F epoch 5/100] loss=2.9401
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.86it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.86it/s]
+[M2F epoch 6/100] loss=2.7484
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.60it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.60it/s]
+[M2F epoch 7/100] loss=2.5583
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.01it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.01it/s]
+[M2F epoch 8/100] loss=2.4718
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.94it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.94it/s]
+[M2F epoch 9/100] loss=2.3661
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.27it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.27it/s]
+[M2F epoch 10/100] loss=2.3167
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.29it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.29it/s]
+[M2F epoch 11/100] loss=2.2392
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.06it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.06it/s]
+[M2F epoch 12/100] loss=2.2128
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.21s/it]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.21s/it]
+[M2F epoch 13/100] loss=2.1600
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.35it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.34it/s]
+[M2F epoch 14/100] loss=2.1180
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.07s/it]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.07s/it]
+[M2F epoch 15/100] loss=2.1161
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.46it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.46it/s]
+[M2F epoch 16/100] loss=2.0552
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.80it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.80it/s]
+[M2F epoch 17/100] loss=2.0845
+[M2F epoch 18/100] loss=1.9948
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.01s/it]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.01s/it]
+[M2F epoch 19/100] loss=2.0091
+[M2F epoch 20/100] loss=1.9937
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.47it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.47it/s]
+/workspace/blum/venv-kip/lib/python3.12/site-packages/torch/autograd/graph.py:979: UserWarning: Memory Efficient attention defaults to a non-deterministic algorithm. To explicitly enable determinism call torch.use_deterministic_algorithms(True, warn_only=False). (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/transformers/cuda/attention_backward.cu:833.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[M2F epoch 21/100] loss=1.9329
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.50it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.50it/s]
+[M2F epoch 22/100] loss=1.8870
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.51it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.51it/s]
+[M2F epoch 23/100] loss=1.8710
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.75it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.75it/s]
+[M2F epoch 24/100] loss=1.8525
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.05it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.05it/s]
+[M2F epoch 25/100] loss=1.8530
+[M2F epoch 26/100] loss=1.8407
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.04it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.04it/s]
+[M2F epoch 27/100] loss=1.8436
+[M2F epoch 28/100] loss=1.8204
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.46it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.46it/s]
+[M2F epoch 29/100] loss=1.8079
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.51it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.51it/s]
+[M2F epoch 30/100] loss=1.8050
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.55it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.55it/s]
+[M2F epoch 31/100] loss=1.8025
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.00it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.00it/s]
+[M2F epoch 32/100] loss=1.7991
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.23it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.23it/s]
+[M2F epoch 33/100] loss=1.7899
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.35it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.35it/s]
+[M2F epoch 34/100] loss=1.7810
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.70it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.70it/s]
+[M2F epoch 35/100] loss=1.7681
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.84it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.84it/s]
+[M2F epoch 36/100] loss=1.7549
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.83it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.83it/s]
+[M2F epoch 37/100] loss=1.7550
+[M2F epoch 38/100] loss=1.7505
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.15it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.15it/s]
+[M2F epoch 39/100] loss=1.7438
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.10it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.10it/s]
+[M2F epoch 40/100] loss=1.7761
+[M2F epoch 41/100] loss=1.7676
+[M2F epoch 42/100] loss=1.7514
+[M2F epoch 43/100] loss=1.7398
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.88it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.88it/s]
+[M2F epoch 44/100] loss=1.7226
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.13it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.12it/s]
+[M2F epoch 45/100] loss=1.7198
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.68it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.68it/s]
+[M2F epoch 46/100] loss=1.7221
+[M2F epoch 47/100] loss=1.7173
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.20it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.20it/s]
+[M2F epoch 48/100] loss=1.7058
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.17it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.17it/s]
+[M2F epoch 49/100] loss=1.6811
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.63it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.63it/s]
+[M2F epoch 50/100] loss=1.6737
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.72it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.72it/s]
+[M2F epoch 51/100] loss=1.6732
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.48it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.48it/s]
+[M2F epoch 52/100] loss=1.6650
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.47it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.47it/s]
+[M2F epoch 53/100] loss=1.6751
+[M2F epoch 54/100] loss=1.6607
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.57it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.57it/s]
+[M2F epoch 55/100] loss=1.6667
+[M2F epoch 56/100] loss=1.6604
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.00it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.00it/s]
+[M2F epoch 57/100] loss=1.6804
+[M2F epoch 58/100] loss=1.6430
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.53it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.53it/s]
+[M2F epoch 59/100] loss=1.6484
+[M2F epoch 60/100] loss=1.6344
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.13it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.13it/s]
+[M2F epoch 61/100] loss=1.6239
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.34it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.34it/s]
+[M2F epoch 62/100] loss=1.6415
+[M2F epoch 63/100] loss=1.6256
+[M2F epoch 64/100] loss=1.6141
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.86it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.86it/s]
+[M2F epoch 65/100] loss=1.5936
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.63it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.63it/s]
+[M2F epoch 66/100] loss=1.6117
+[M2F epoch 67/100] loss=1.5926
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.31it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.31it/s]
+[M2F epoch 68/100] loss=1.5990
+[M2F epoch 69/100] loss=1.5988
+[M2F epoch 70/100] loss=1.5939
+[M2F epoch 71/100] loss=1.5740
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.46it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.46it/s]
+[M2F epoch 72/100] loss=1.5690
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.71it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.71it/s]
+[M2F epoch 73/100] loss=1.5742
+[M2F epoch 74/100] loss=1.5929
+[M2F epoch 75/100] loss=1.5636
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.12s/it]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.12s/it]
+[M2F epoch 76/100] loss=1.5594
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.11it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.11it/s]
+[M2F epoch 77/100] loss=1.5693
+[M2F epoch 78/100] loss=1.5534
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.67it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.67it/s]
+[M2F epoch 79/100] loss=1.5542
+[M2F epoch 80/100] loss=1.5445
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.64it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.64it/s]
+[M2F epoch 81/100] loss=1.5439
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.57it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.57it/s]
+[M2F epoch 82/100] loss=1.5489
+[M2F epoch 83/100] loss=1.5437
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.17it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.17it/s]
+[M2F epoch 84/100] loss=1.5372
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.57it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.57it/s]
+[M2F epoch 85/100] loss=1.5386
+[M2F epoch 86/100] loss=1.5457
+[M2F epoch 87/100] loss=1.5318
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.17it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.17it/s]
+[M2F epoch 88/100] loss=1.5362
+[M2F epoch 89/100] loss=1.5345
+[M2F epoch 90/100] loss=1.5288
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.06it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.06it/s]
+[M2F epoch 91/100] loss=1.5326
+[M2F epoch 92/100] loss=1.5312
+[M2F epoch 93/100] loss=1.5301
+[M2F epoch 94/100] loss=1.5351
+[M2F epoch 95/100] loss=1.5345
+[M2F epoch 96/100] loss=1.5347
+[M2F epoch 97/100] loss=1.5370
+[M2F epoch 98/100] loss=1.5213
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.61it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.60it/s]
+[M2F epoch 99/100] loss=1.5295
+[M2F epoch 100/100] loss=1.5260
+[M2F] Training done in 7905.9s. Best loss: 1.5213. Checkpoint: /workspace/blum/KIP/results/component_benchmark/mask2former_augoff_20260710_140055/checkpoints
+[stage1] Mask2Former training done in 7912.1s
+Loading weights:   0%|          | 0/556 [00:00<?, ?it/s]Loading weights:  58%|█████▊    | 321/556 [00:00<00:00, 3206.71it/s]Loading weights: 100%|██████████| 556/556 [00:00<00:00, 3438.90it/s]
+loading annotations into memory...
+Done (t=0.09s)
+creating index...
+index created!
+[stage1] Evaluating predictions at /workspace/blum/KIP/results/component_benchmark/mask2former_augoff_20260710_140055/predictions/coco_predictions.json
+loading annotations into memory...
+Done (t=0.07s)
+creating index...
+index created!
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.08s).
+Accumulating evaluation results...
+DONE (t=0.04s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.601
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.696
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.607
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.652
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.668
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.614
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.614
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.614
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.667
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.683
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.15s).
+Accumulating evaluation results...
+DONE (t=0.03s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.535
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.618
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.558
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.572
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.593
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.553
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.553
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.553
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.581
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.616
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.00s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.336
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.336
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.336
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.336
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.400
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.400
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.400
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.400
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.433
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.584
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.584
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.738
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.441
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.441
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.441
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.753
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = -1.000
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.933
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 1.000
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.933
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.934
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.934
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.934
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.934
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.404
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.420
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.404
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.404
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.405
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.405
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.405
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.405
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.701
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.912
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.567
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.701
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.726
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.726
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.726
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.726
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.00s).
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.406
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.455
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.455
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.406
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.409
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.409
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.409
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.409
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = -1.000
+[stage1] segm_mAP50=0.6179  segm_mAP50_95=0.5355  bbox_mAP50=0.6962
+[stage1] Done. Artefacts in /workspace/blum/KIP/results/component_benchmark/mask2former_augoff_20260710_140055
+[stage1] Summary row appended to /workspace/blum/KIP/results/component_benchmark/summary.csv

@@ -1,0 +1,6 @@
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[unet/fixed] run -> unet_fixed_augon_seed42_20260712_100937
+  image_auroc=1.0  pixel_auroc=0.9105866106947194  aupro=0.8854464891384225  dice=0.500701266209213

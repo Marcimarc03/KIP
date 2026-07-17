@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "run_id": "mask2former_augoff_20260710_140055",
+  "stage": 1,
+  "model": "mask2former",
+  "augmentation": false,
+  "seed": 42,
+  "smoke": false,
+  "device": "cuda:0",
+  "split": {
+    "scheme": "fixed",
+    "n_folds": 1,
+    "test_set": "real_v3/test"
+  },
+  "dataset": {
+    "n_train": 713,
+    "n_val": 101,
+    "n_test": 148,
+    "n_good": 0,
+    "n_defect": 0,
+    "n_tiles_train": 0,
+    "n_tiles_test": 0,
+    "missing_mask_policy": "normal",
+    "crop_failures": 0
+  },
+  "runtime": {
+    "train_seconds": 7912.07,
+    "infer_ms_per_image": 141.99
+  },
+  "metrics": {
+    "bbox_map50": 0.6961849667513617,
+    "bbox_map50_95": 0.6007141801849938,
+    "segm_map50": 0.6178783099741356,
+    "segm_map50_95": 0.5354980961330567,
+    "segm_map75": 0.5577329559581345,
+    "precision": 0.5526320104606792,
+    "recall": 0.5526320104606792,
+    "per_class": {
+      "anti-vibration_handle": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "bearing_plate": {
+        "segm_ap50": 0.33576004659289455,
+        "segm_ap50_95": 0.33576004659289455
+      },
+      "bevel_gear_drive": {
+        "segm_ap50": 0.5841584158415841,
+        "segm_ap50_95": 0.4327646610814928
+      },
+      "bevel_gear_spindle": {
+        "segm_ap50": 1.0,
+        "segm_ap50_95": 0.9329720014111204
+      },
+      "gearbox_housing": {
+        "segm_ap50": 0.4202235349585379,
+        "segm_ap50_95": 0.4044623790110104
+      },
+      "intermediate_gearbox": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "motor_housing": {
+        "segm_ap50": 0.9116823178973417,
+        "segm_ap50_95": 0.7005938451374653
+      },
+      "shaft": {
+        "segm_ap50": 0.45544554455445546,
+        "segm_ap50_95": 0.4064356435643564
+      },
+      "wheel_guard": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      }
+    }
+  },
+  "git_commit": "3a1754b",
+  "timestamp_utc": "2026-07-10T16:13:09.701652+00:00"
+}

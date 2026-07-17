@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "run_id": "mask2former_augon_20260710_105146",
+  "stage": 1,
+  "model": "mask2former",
+  "augmentation": true,
+  "seed": 42,
+  "smoke": false,
+  "device": "cuda:0",
+  "split": {
+    "scheme": "fixed",
+    "n_folds": 1,
+    "test_set": "real_v3/test"
+  },
+  "dataset": {
+    "n_train": 713,
+    "n_val": 101,
+    "n_test": 148,
+    "n_good": 0,
+    "n_defect": 0,
+    "n_tiles_train": 0,
+    "n_tiles_test": 0,
+    "missing_mask_policy": "normal",
+    "crop_failures": 0
+  },
+  "runtime": {
+    "train_seconds": 8226.55,
+    "infer_ms_per_image": 125.48
+  },
+  "metrics": {
+    "bbox_map50": 0.7442244224422442,
+    "bbox_map50_95": 0.6407669303452994,
+    "segm_map50": 0.6410222137993443,
+    "segm_map50_95": 0.5201861931985429,
+    "segm_map75": 0.5246837938254822,
+    "precision": 0.5730294588797687,
+    "recall": 0.5742873205149889,
+    "per_class": {
+      "anti-vibration_handle": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "bearing_plate": {
+        "segm_ap50": 0.35145048118257205,
+        "segm_ap50_95": 0.26937418531769136
+      },
+      "bevel_gear_drive": {
+        "segm_ap50": 0.5841584158415841,
+        "segm_ap50_95": 0.42595709570957097
+      },
+      "bevel_gear_spindle": {
+        "segm_ap50": 1.0,
+        "segm_ap50_95": 0.9282770660257761
+      },
+      "gearbox_housing": {
+        "segm_ap50": 0.42574257425742573,
+        "segm_ap50_95": 0.3964765616833177
+      },
+      "intermediate_gearbox": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "motor_housing": {
+        "segm_ap50": 0.9996332966629996,
+        "segm_ap50_95": 0.6774266398938454
+      },
+      "shaft": {
+        "segm_ap50": 0.48514851485148514,
+        "segm_ap50_95": 0.4236056105610561
+      },
+      "wheel_guard": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      }
+    }
+  },
+  "git_commit": "3a1754b",
+  "timestamp_utc": "2026-07-10T13:09:12.177006+00:00"
+}

@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0",
+  "run_id": "maskrcnn_augon_smoke_20260715_014955",
+  "stage": 1,
+  "model": "maskrcnn",
+  "tag": "smoke",
+  "init_weights": null,
+  "augmentation": true,
+  "seed": 42,
+  "smoke": true,
+  "device": "cuda:0",
+  "split": {
+    "scheme": "fixed",
+    "n_folds": 1,
+    "test_set": "real_v3/test"
+  },
+  "dataset": {
+    "n_train": 713,
+    "n_val": 101,
+    "n_test": 148,
+    "n_good": 0,
+    "n_defect": 0,
+    "n_tiles_train": 0,
+    "n_tiles_test": 0,
+    "missing_mask_policy": "normal",
+    "crop_failures": 0
+  },
+  "runtime": {
+    "train_seconds": 95.67,
+    "infer_ms_per_image": 804.26
+  },
+  "metrics": {
+    "bbox_map50": 0.22394152725355893,
+    "bbox_map50_95": 0.09959088575883245,
+    "segm_map50": 0.2296768569614253,
+    "segm_map50_95": 0.12843007788004598,
+    "segm_map75": 0.14447345982161638,
+    "precision": 0.2512452219440631,
+    "recall": 0.40354342177371394,
+    "per_class": {
+      "anti-vibration_handle": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "bearing_plate": {
+        "segm_ap50": 0.18112703044958806,
+        "segm_ap50_95": 0.07849361009330823
+      },
+      "bevel_gear_drive": {
+        "segm_ap50": 0.5372450929303457,
+        "segm_ap50_95": 0.34417805212361996
+      },
+      "bevel_gear_spindle": {
+        "segm_ap50": 0.5070437334647294,
+        "segm_ap50_95": 0.2589996326247008
+      },
+      "gearbox_housing": {
+        "segm_ap50": 0.042555053713570344,
+        "segm_ap50_95": 0.01851180919277583
+      },
+      "intermediate_gearbox": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "motor_housing": {
+        "segm_ap50": 2.4326757000024325e-05,
+        "segm_ap50_95": 2.4326757000024326e-06
+      },
+      "shaft": {
+        "segm_ap50": 0.11006590445331867,
+        "segm_ap50_95": 0.07039493057017113
+      },
+      "wheel_guard": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      }
+    }
+  },
+  "git_commit": "9ee0318",
+  "timestamp_utc": "2026-07-15T01:53:34.010902+00:00"
+}

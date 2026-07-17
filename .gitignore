@@ -4,3 +4,4 @@ __pycache__/
 *.safetensors
 # Grosse Stage-2 Heatmap-Maps (aus metrics.json/scores.csv rekonstruierbar; nicht versionieren)
 *.npz
+*.pt

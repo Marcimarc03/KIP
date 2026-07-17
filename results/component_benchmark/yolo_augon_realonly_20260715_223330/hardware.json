@@ -1,0 +1,16 @@
+{
+  "platform": "Linux-5.4.0-216-generic-x86_64-with-glibc2.39",
+  "python": "3.12.3",
+  "processor": "x86_64",
+  "machine": "x86_64",
+  "torch_version": "2.13.0+cu126",
+  "mps_available": false,
+  "cuda_available": true,
+  "cuda_version": "12.6",
+  "cuda_device_count": 1,
+  "ram_gb": 270.2,
+  "chip": "x86_64",
+  "cuda_devices": [
+    "Tesla V100-DGXS-32GB"
+  ]
+}

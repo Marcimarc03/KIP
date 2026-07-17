@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "run_id": "maskrcnn_augon_20260714_172815",
+  "stage": 1,
+  "model": "maskrcnn",
+  "augmentation": true,
+  "seed": 42,
+  "smoke": true,
+  "device": "cuda:0",
+  "split": {
+    "scheme": "fixed",
+    "n_folds": 1,
+    "test_set": "real_v3/test"
+  },
+  "dataset": {
+    "n_train": 713,
+    "n_val": 101,
+    "n_test": 148,
+    "n_good": 0,
+    "n_defect": 0,
+    "n_tiles_train": 0,
+    "n_tiles_test": 0,
+    "missing_mask_policy": "normal",
+    "crop_failures": 0
+  },
+  "runtime": {
+    "train_seconds": 83.86,
+    "infer_ms_per_image": 864.27
+  },
+  "metrics": {
+    "bbox_map50": 0.24377126166602234,
+    "bbox_map50_95": 0.12405737043059838,
+    "segm_map50": 0.20146992719191362,
+    "segm_map50_95": 0.1336186189921402,
+    "segm_map75": 0.14293870558310606,
+    "precision": 0.17447326980537833,
+    "recall": 0.3616723868744785,
+    "per_class": {
+      "anti-vibration_handle": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "bearing_plate": {
+        "segm_ap50": 0.018411707926288965,
+        "segm_ap50_95": 0.005760665817906625
+      },
+      "bevel_gear_drive": {
+        "segm_ap50": 0.506792611718958,
+        "segm_ap50_95": 0.3313099110563673
+      },
+      "bevel_gear_spindle": {
+        "segm_ap50": 0.5245544173223832,
+        "segm_ap50_95": 0.3591329257051151
+      },
+      "gearbox_housing": {
+        "segm_ap50": 0.025744296212272533,
+        "segm_ap50_95": 0.01065826104567249
+      },
+      "intermediate_gearbox": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "motor_housing": {
+        "segm_ap50": 0.0,
+        "segm_ap50_95": 0.0
+      },
+      "shaft": {
+        "segm_ap50": 0.13331652997157906,
+        "segm_ap50_95": 0.09484995032777947
+      },
+      "wheel_guard": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      }
+    }
+  },
+  "git_commit": "ac713a4",
+  "timestamp_utc": "2026-07-14T17:31:50.342881+00:00"
+}

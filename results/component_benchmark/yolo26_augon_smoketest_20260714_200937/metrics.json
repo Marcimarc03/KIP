@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0",
+  "run_id": "yolo26_augon_smoketest_20260714_200937",
+  "stage": 1,
+  "model": "yolo26",
+  "tag": "smoketest",
+  "init_weights": "yolo26n-seg.pt",
+  "augmentation": true,
+  "seed": 42,
+  "smoke": true,
+  "device": "cuda:0",
+  "split": {
+    "scheme": "fixed",
+    "n_folds": 1,
+    "test_set": "real_v3/test"
+  },
+  "dataset": {
+    "n_train": 713,
+    "n_val": 101,
+    "n_test": 148,
+    "n_good": 0,
+    "n_defect": 0,
+    "n_tiles_train": 0,
+    "n_tiles_test": 0,
+    "missing_mask_policy": "normal",
+    "crop_failures": 0
+  },
+  "runtime": {
+    "train_seconds": 51.32,
+    "infer_ms_per_image": 408.06
+  },
+  "metrics": {
+    "bbox_map50": 0.023673075493473406,
+    "bbox_map50_95": 0.014245721859939525,
+    "segm_map50": 0.020212419327320177,
+    "segm_map50_95": 0.012984011809235368,
+    "segm_map75": 0.012110357102762025,
+    "precision": 0.0175,
+    "recall": 0.11110961365678347,
+    "per_class": {
+      "anti-vibration_handle": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "bearing_plate": {
+        "segm_ap50": 0.004105772160714318,
+        "segm_ap50_95": 0.0011557113803787311
+      },
+      "bevel_gear_drive": {
+        "segm_ap50": 0.0,
+        "segm_ap50_95": 0.0
+      },
+      "bevel_gear_spindle": {
+        "segm_ap50": 0.0,
+        "segm_ap50_95": 0.0
+      },
+      "gearbox_housing": {
+        "segm_ap50": 0.0019436970974681762,
+        "segm_ap50_95": 0.0004074889250032533
+      },
+      "intermediate_gearbox": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "motor_housing": {
+        "segm_ap50": 0.11522504670573859,
+        "segm_ap50_95": 0.07634087055003022
+      },
+      "shaft": {
+        "segm_ap50": 0.0,
+        "segm_ap50_95": 0.0
+      },
+      "wheel_guard": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      }
+    }
+  },
+  "git_commit": "6d10d54",
+  "timestamp_utc": "2026-07-14T20:12:01.703244+00:00"
+}

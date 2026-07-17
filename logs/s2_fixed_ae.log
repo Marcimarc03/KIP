@@ -1,0 +1,4 @@
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[ae/fixed] run -> ae_fixed_augoff_seed42_20260712_100624
+  image_auroc=0.7333333333333334  pixel_auroc=0.6484850856644402  aupro=0.7431099136766742  dice=None

@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "run_id": "yolo_augoff_20260710_173335",
+  "stage": 1,
+  "model": "yolo",
+  "augmentation": false,
+  "seed": 42,
+  "smoke": false,
+  "device": "cuda:0",
+  "split": {
+    "scheme": "fixed",
+    "n_folds": 1,
+    "test_set": "real_v3/test"
+  },
+  "dataset": {
+    "n_train": 713,
+    "n_val": 101,
+    "n_test": 148,
+    "n_good": 0,
+    "n_defect": 0,
+    "n_tiles_train": 0,
+    "n_tiles_test": 0,
+    "missing_mask_policy": "normal",
+    "crop_failures": 0
+  },
+  "runtime": {
+    "train_seconds": 2979.87,
+    "infer_ms_per_image": 34.04
+  },
+  "metrics": {
+    "bbox_map50": 0.8458411822419537,
+    "bbox_map50_95": 0.7267960063637737,
+    "segm_map50": 0.7082710544106029,
+    "segm_map50_95": 0.5485979825418517,
+    "segm_map75": 0.6295639623064238,
+    "precision": 0.5974570349540885,
+    "recall": 0.608273337812999,
+    "per_class": {
+      "anti-vibration_handle": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "bearing_plate": {
+        "segm_ap50": 0.5123762376237625,
+        "segm_ap50_95": 0.24819452533488645
+      },
+      "bevel_gear_drive": {
+        "segm_ap50": 0.5841584158415841,
+        "segm_ap50_95": 0.38461269656377406
+      },
+      "bevel_gear_spindle": {
+        "segm_ap50": 0.9885257972391663,
+        "segm_ap50_95": 0.8779257737548944
+      },
+      "gearbox_housing": {
+        "segm_ap50": 0.5355724803249555,
+        "segm_ap50_95": 0.4332451881475773
+      },
+      "intermediate_gearbox": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "motor_housing": {
+        "segm_ap50": 0.6320398539261514,
+        "segm_ap50_95": 0.58314327674267
+      },
+      "shaft": {
+        "segm_ap50": 0.996953541507997,
+        "segm_ap50_95": 0.7644664347073078
+      },
+      "wheel_guard": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      }
+    }
+  },
+  "git_commit": "3a1754b",
+  "timestamp_utc": "2026-07-10T18:23:22.218268+00:00"
+}

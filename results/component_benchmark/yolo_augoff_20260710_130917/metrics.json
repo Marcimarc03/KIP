@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "run_id": "yolo_augoff_20260710_130917",
+  "stage": 1,
+  "model": "yolo",
+  "augmentation": false,
+  "seed": 42,
+  "smoke": false,
+  "device": "cuda:0",
+  "split": {
+    "scheme": "fixed",
+    "n_folds": 1,
+    "test_set": "real_v3/test"
+  },
+  "dataset": {
+    "n_train": 713,
+    "n_val": 101,
+    "n_test": 148,
+    "n_good": 0,
+    "n_defect": 0,
+    "n_tiles_train": 0,
+    "n_tiles_test": 0,
+    "missing_mask_policy": "normal",
+    "crop_failures": 0
+  },
+  "runtime": {
+    "train_seconds": 3088.35,
+    "infer_ms_per_image": 30.43
+  },
+  "metrics": {
+    "bbox_map50": 0.8157629282978128,
+    "bbox_map50_95": 0.7138022065929845,
+    "segm_map50": 0.6756764959232923,
+    "segm_map50_95": 0.5542757755126845,
+    "segm_map75": 0.6103700349585257,
+    "precision": 0.5848073635898677,
+    "recall": 0.5866529146776089,
+    "per_class": {
+      "anti-vibration_handle": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "bearing_plate": {
+        "segm_ap50": 0.45129066478076374,
+        "segm_ap50_95": 0.43467114568599713
+      },
+      "bevel_gear_drive": {
+        "segm_ap50": 0.5841584158415841,
+        "segm_ap50_95": 0.3982257259339379
+      },
+      "bevel_gear_spindle": {
+        "segm_ap50": 0.9961137089897698,
+        "segm_ap50_95": 0.8922647412795075
+      },
+      "gearbox_housing": {
+        "segm_ap50": 0.4184085075174184,
+        "segm_ap50_95": 0.39415443146878787
+      },
+      "intermediate_gearbox": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "motor_housing": {
+        "segm_ap50": 0.7013825864724512,
+        "segm_ap50_95": 0.5376123930485938
+      },
+      "shaft": {
+        "segm_ap50": 0.9027050919377653,
+        "segm_ap50_95": 0.6687262156592826
+      },
+      "wheel_guard": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      }
+    }
+  },
+  "git_commit": "3a1754b",
+  "timestamp_utc": "2026-07-10T14:00:50.861601+00:00"
+}

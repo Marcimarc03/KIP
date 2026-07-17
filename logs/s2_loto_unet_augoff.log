@@ -1,0 +1,4 @@
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[unet/loto] run -> unet_loto_augoff_seed42_20260712_095634
+  image_auroc=0.8181818181818182  pixel_auroc=0.692255113157223  aupro=0.8292338300887702  dice=0.06660358720332021
