@@ -36,7 +36,10 @@ def main() -> None:
     groups: dict = defaultdict(list)
     for r in rows:
         aug = "on" if str(g(r, "augmentation")).lower() == "true" else "off"
-        key = (g(r, "model"), aug, g(r, "tag") or "-", g(r, "init_weights") or "-")
+        # Fingerprint (test_sha) mit in den Key: trennt alte Laeufe ohne Stempel
+        # von den neuen Multi-Seed-Laeufen -> keine Vermischung mehr.
+        sha = (g(r, "test_sha") or "nofp")[:8]
+        key = (g(r, "model"), aug, g(r, "tag") or "-", sha)
         groups[key].append(r)
 
     def stat(rs, metric):
@@ -56,7 +59,7 @@ def main() -> None:
           f"{'segm50 (mean+-std)':>20}{'segm50-95':>18}{'bbox50':>16}   Fingerprint")
     print("-" * 118)
     for key in sorted(groups):
-        model, aug, tag, init = key
+        model, aug, tag, _sha = key
         rs = groups[key]
         shas = {g(r, "test_sha") for r in rs}
         ntests = {g(r, "n_test") for r in rs}
