@@ -8,3 +8,7 @@ __pycache__/
 coco_predictions.json
 # Modellgewichte
 *.pt
+# Transfer-Tarballs / Archive (nur zum Kopieren, nicht versionieren)
+*.tgz
+*.tar.gz
+*.zip
