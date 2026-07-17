@@ -88,6 +88,29 @@ python scripts/eval_stage1_checkpoint.py --model yolo \
     --imgsz 640 --device cuda:0 --tag strategyA_synth_only
 ```
 
+### Multi-Seed-Studie (belastbare Ergebnisse, DGX)
+
+Einzelläufe streuen ~0,04 segm-mAP50 (Trainings-Nichtdeterminismus: cuDNN, stochastische
+Augmentierung, Datenreihenfolge). Für belastbare Aussagen: 3 Seeds je Modell/Konfiguration,
+dann Mittel±Std + Bootstrap-CI. Ein-Stück-Batch (Split-Guard Option B, GPU-Guard,
+`KIP_WORKERS=0`, continue-on-error):
+
+```bash
+tmux new -s ms
+source /workspace/blum/venv-kip/bin/activate
+bash scripts/run_multiseed_stage1.sh        # Seeds 42/1/2; ~24-39 h; abkoppeln: Strg+b, d
+```
+
+Auswertung (kein Retraining, nutzt gespeicherte Predictions):
+```bash
+python scripts/aggregate_stage1.py          # Mittel±Std je (Modell, aug, tag); verweigert Konfig-Mix
+python scripts/bootstrap_stage1.py \
+  results/component_benchmark/<yolo26_run> \
+  results/component_benchmark/<yolo11_run> \
+  results/component_benchmark/<m2f_run>     # 95%-CI + gepaarte Modellvergleiche
+```
+Regel: Modellabstand nur behaupten, wenn Seed-Bänder disjunkt UND die gepaarte Bootstrap-CI 0 ausschließt.
+
 ### Lokale Smoke-Tests (MPS / CPU)
 
 ```bash

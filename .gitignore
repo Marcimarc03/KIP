@@ -12,3 +12,6 @@ coco_predictions.json
 *.tgz
 *.tar.gz
 *.zip
+# summary.csv wird aus metrics.json regeneriert (aggregate_stage1.py) und
+# erzeugt beim Mergen staendig Konflikte -> nicht versionieren
+results/component_benchmark/summary.csv
