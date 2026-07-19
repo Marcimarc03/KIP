@@ -1,94 +1,92 @@
 #!/usr/bin/env python
-"""Aggregate Stage-1 multi-seed runs into mean +/- std per (model, aug, tag/init).
+"""Aggregate Stage-1 runs into mean +/- std per (model, aug, tag, split-fingerprint).
 
-Rigor guard: within a group, all runs must share the same split fingerprint
-(test_sha, n_test) and worker config. If not, the group is flagged INKONSISTENT
-and must NOT be reported as a single mean (mixing configs = fake variance).
+Liest DIREKT aus den metrics.json jedes Laufs -- robust gegen eine kaputte/
+gemergte summary.csv. Gruppen mit abweichendem Fingerprint (test_sha, n_test,
+workers) werden als INKONSISTENT markiert und NICHT als eine Zahl aggregiert.
 
 Usage:  python scripts/aggregate_stage1.py
 """
 from __future__ import annotations
 
-import csv
+import glob
+import json
 import statistics
 from collections import defaultdict
 from pathlib import Path
 
-SUMMARY = Path(__file__).resolve().parents[1] / "results/component_benchmark/summary.csv"
+BASE = Path(__file__).resolve().parents[1] / "results" / "component_benchmark"
 
 
-def g(row: dict, name: str) -> str:
-    """Read a column tolerant to the 'metric.' prefix append_summary may add."""
-    for k in (name, "metric." + name):
-        v = row.get(k)
-        if v not in (None, ""):
-            return v
-    return ""
+def load_runs():
+    runs = []
+    for f in sorted(glob.glob(str(BASE / "*" / "metrics.json"))):
+        try:
+            d = json.load(open(f))
+        except Exception:
+            continue
+        if d.get("stage") != 1 or d.get("smoke"):
+            continue
+        m = d.get("metrics", {}) or {}
+        fp = (d.get("split") or {}).get("fingerprint", {}) or {}
+        env = d.get("environment", {}) or {}
+        runs.append({
+            "model": d.get("model"),
+            "aug": "on" if d.get("augmentation") else "off",
+            "tag": d.get("tag") or "-",
+            "seed": d.get("seed"),
+            "sha": fp.get("test_json_sha256", "") or "",
+            "n_test": (d.get("dataset") or {}).get("n_test"),
+            "workers": env.get("kip_workers", ""),
+            "segm50": m.get("segm_map50"),
+            "segm5095": m.get("segm_map50_95"),
+            "bbox50": m.get("bbox_map50"),
+        })
+    return runs
+
+
+def _stat(rs, key):
+    vals = [r[key] for r in rs if isinstance(r[key], (int, float))]
+    if not vals:
+        return "  --  "
+    if len(vals) == 1:
+        return f"{vals[0]:.4f} (n=1)"
+    return f"{statistics.mean(vals):.4f}±{statistics.stdev(vals):.4f}"
 
 
 def main() -> None:
-    if not SUMMARY.exists():
-        print(f"summary.csv nicht gefunden: {SUMMARY}")
+    runs = load_runs()
+    if not runs:
+        print(f"Keine Stage-1 metrics.json unter {BASE}")
         return
-    rows = [r for r in csv.DictReader(open(SUMMARY))
-            if str(g(r, "smoke")).lower() == "false"]
 
-    groups: dict = defaultdict(list)
-    for r in rows:
-        aug = "on" if str(g(r, "augmentation")).lower() == "true" else "off"
-        # Fingerprint (test_sha) mit in den Key: trennt alte Laeufe ohne Stempel
-        # von den neuen Multi-Seed-Laeufen -> keine Vermischung mehr.
-        sha = (g(r, "test_sha") or "nofp")[:8]
-        key = (g(r, "model"), aug, g(r, "tag") or "-", sha)
-        groups[key].append(r)
-
-    def stat(rs, metric):
-        vals = []
-        for r in rs:
-            try:
-                vals.append(float(g(r, metric)))
-            except (TypeError, ValueError):
-                pass
-        if not vals:
-            return "  --  ", []
-        if len(vals) == 1:
-            return f"{vals[0]:.4f} (n=1)", vals
-        return f"{statistics.mean(vals):.4f}±{statistics.stdev(vals):.4f}", vals
+    groups = defaultdict(list)
+    for r in runs:
+        groups[(r["model"], r["aug"], r["tag"], (r["sha"] or "nofp")[:8])].append(r)
 
     print(f"{'model':12}{'aug':4}{'tag':13}{'n':>2}  "
-          f"{'segm50 (mean+-std)':>20}{'segm50-95':>18}{'bbox50':>16}   Fingerprint")
-    print("-" * 118)
+          f"{'segm50 (mean+-std)':>20}{'segm50-95':>16}{'bbox50':>14}   Fingerprint")
+    print("-" * 114)
     for key in sorted(groups):
-        model, aug, tag, _sha = key
+        model, aug, tag, _ = key
         rs = groups[key]
-        shas = {g(r, "test_sha") for r in rs}
-        ntests = {g(r, "n_test") for r in rs}
-        workers = {g(r, "workers") for r in rs}
-        seeds = [g(r, "seed") for r in rs]
-        consistent = len(shas) <= 1 and len(ntests) <= 1 and len(workers) <= 1
-
-        s50, v50 = stat(rs, "segm_map50")
-        s5095, _ = stat(rs, "segm_map50_95")
-        sbox, _ = stat(rs, "bbox_map50")
-        fp = f"sha={sorted(shas)} n={sorted(ntests)} w={sorted(workers)}"
+        shas = sorted({r["sha"] for r in rs})
+        nts = sorted({str(r["n_test"]) for r in rs})
+        ws = sorted({str(r["workers"]) for r in rs})
+        consistent = len(shas) <= 1 and len(nts) <= 1 and len(ws) <= 1
         flag = "" if consistent else "  <<< INKONSISTENT -> NICHT aggregieren"
         print(f"{model:12}{aug:4}{tag[:12]:13}{len(rs):>2}  "
-              f"{s50:>20}{s5095:>18}{sbox:>16}   {fp}{flag}")
-        # seed<->value paarweise sammeln (nicht zippen: sonst verrutscht die
-        # Zuordnung, falls ein Lauf segm_map50 nicht hat)
-        pair_list = []
-        for r in rs:
-            v = g(r, "segm_map50")
-            try:
-                pair_list.append((g(r, "seed"), f"{float(v):.4f}"))
-            except (TypeError, ValueError):
-                pair_list.append((g(r, "seed"), "--"))
-        pairs = ", ".join(f"{sd}:{vv}" for sd, vv in sorted(pair_list))
+              f"{_stat(rs, 'segm50'):>20}{_stat(rs, 'segm5095'):>16}{_stat(rs, 'bbox50'):>14}   "
+              f"sha={shas} n={nts} w={ws}{flag}")
+        pairs = ", ".join(
+            f"{r['seed']}:{r['segm50']:.4f}"
+            for r in sorted(rs, key=lambda x: str(x["seed"]))
+            if isinstance(r["segm50"], (int, float))
+        )
         print(f"    seeds/segm50: {pairs}")
 
-    print("\nRegeln: (1) nur konsistente Gruppen aggregieren. (2) Differenz zwischen")
-    print("Modellen nur behaupten, wenn die Seed-Baender disjunkt sind (idealerweise")
-    print("zusaetzlich per Bootstrap-CI ueber die 148 Testbilder abgesichert).")
+    print("\nQuelle: metrics.json je Lauf. Modellabstand nur behaupten, wenn die")
+    print("Seed-Baender disjunkt sind (bei uns Primaerbeleg statt Bootstrap).")
 
 
 if __name__ == "__main__":

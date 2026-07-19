@@ -6,7 +6,7 @@
   "imgsz": 640,
   "test_set": "real_v3/test (tool98)",
   "n_test": 148,
-  "infer_ms_per_image": 62.76,
+  "infer_ms_per_image": 74.61,
   "metrics": {
     "bbox_map50": 0.4468682598936436,
     "bbox_map50_95": 0.3430583787711045,
