@@ -1,0 +1,202 @@
+[06:42:04] Seeds (nur gradientenbasierte Verfahren)=42 1 2 ; Splits=loto fixed
+[06:42:04] GPU frei: 28987 MiB (ok)
+3511 MiB, 0 %
+[06:42:04] === START: PatchCore loto (deterministisch, 1 Lauf) ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[patchcore/loto] run -> patchcore_loto_augoff_seed42_20260719_064252
+  image_auroc=0.42045454545454547  pixel_auroc=0.6107286809836789  aupro=0.7809107195700135  dice=None
+[06:42:54] === OK:    PatchCore loto (deterministisch, 1 Lauf) ===
+[06:42:54] === START: PaDiM loto (deterministisch, 1 Lauf) ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[padim/loto] run -> padim_loto_augoff_seed42_20260719_074007
+  image_auroc=0.25  pixel_auroc=0.5471396764530638  aupro=0.8266792808574884  dice=None
+[07:40:09] === OK:    PaDiM loto (deterministisch, 1 Lauf) ===
+[07:40:09] === START: PatchCore fixed (deterministisch, 1 Lauf) ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[patchcore/fixed] run -> patchcore_fixed_augoff_seed42_20260719_074035
+  image_auroc=0.7333333333333334  pixel_auroc=0.7447764279038849  aupro=0.8013869998169851  dice=None
+[07:40:37] === OK:    PatchCore fixed (deterministisch, 1 Lauf) ===
+[07:40:37] === START: PaDiM fixed (deterministisch, 1 Lauf) ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[padim/fixed] run -> padim_fixed_augoff_seed42_20260719_074848
+  image_auroc=0.7333333333333334  pixel_auroc=0.6544136402490497  aupro=0.8485632053801218  dice=None
+[07:48:50] === OK:    PaDiM fixed (deterministisch, 1 Lauf) ===
+[07:48:50] === START: ConvAE loto seed42 ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[ae/loto] run -> ae_loto_augoff_seed42_20260719_075012
+  image_auroc=0.6363636363636364  pixel_auroc=0.5836060911451384  aupro=0.6445059296509695  dice=None
+[07:50:14] === OK:    ConvAE loto seed42 ===
+[07:50:14] === START: ConvAE loto seed1 ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[ae/loto] run -> ae_loto_augoff_seed1_20260719_075136
+  image_auroc=0.6136363636363635  pixel_auroc=0.5439155568296514  aupro=0.6252260049644233  dice=None
+[07:51:39] === OK:    ConvAE loto seed1 ===
+[07:51:39] === START: ConvAE loto seed2 ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[ae/loto] run -> ae_loto_augoff_seed2_20260719_075300
+  image_auroc=0.625  pixel_auroc=0.5459152937045544  aupro=0.60026706055984  dice=None
+[07:53:02] === OK:    ConvAE loto seed2 ===
+[07:53:02] === START: ConvAE fixed seed42 ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[ae/fixed] run -> ae_fixed_augoff_seed42_20260719_075331
+  image_auroc=0.7333333333333334  pixel_auroc=0.6484850856644402  aupro=0.7431099136766742  dice=None
+[07:53:33] === OK:    ConvAE fixed seed42 ===
+[07:53:33] === START: ConvAE fixed seed1 ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[ae/fixed] run -> ae_fixed_augoff_seed1_20260719_075402
+  image_auroc=0.7333333333333334  pixel_auroc=0.681524045079613  aupro=0.7662429404662535  dice=None
+[07:54:03] === OK:    ConvAE fixed seed1 ===
+[07:54:03] === START: ConvAE fixed seed2 ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[ae/fixed] run -> ae_fixed_augoff_seed2_20260719_075433
+  image_auroc=0.7333333333333334  pixel_auroc=0.6433649931218033  aupro=0.7501090666413885  dice=None
+[07:54:34] === OK:    ConvAE fixed seed2 ===
+[07:54:34] === START: U-Net loto aug-on seed42 ===
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[unet/loto] run -> unet_loto_augon_seed42_20260719_083842
+  image_auroc=0.6931818181818181  pixel_auroc=0.82003948448143  aupro=0.7513565775337452  dice=0.28093606360127876
+[08:38:44] === OK:    U-Net loto aug-on seed42 ===
+[08:38:44] === START: U-Net loto aug-on seed1 ===
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[unet/loto] run -> unet_loto_augon_seed1_20260719_092014
+  image_auroc=0.6477272727272727  pixel_auroc=0.6947617566036981  aupro=0.727063846530484  dice=0.27895946069105576
+[09:20:16] === OK:    U-Net loto aug-on seed1 ===
+[09:20:16] === START: U-Net loto aug-on seed2 ===
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[unet/loto] run -> unet_loto_augon_seed2_20260719_095720
+  image_auroc=0.6704545454545454  pixel_auroc=0.6516319982562512  aupro=0.6545550785803969  dice=0.2675770737156633
+[09:57:22] === OK:    U-Net loto aug-on seed2 ===
+[09:57:22] === START: U-Net loto aug-off seed42 ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[unet/loto] run -> unet_loto_augoff_seed42_20260719_102946
+  image_auroc=0.8181818181818182  pixel_auroc=0.692255113157223  aupro=0.8292338300887702  dice=0.06660358720332021
+[10:29:48] === OK:    U-Net loto aug-off seed42 ===
+[10:29:48] === START: U-Net loto aug-off seed1 ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[unet/loto] run -> unet_loto_augoff_seed1_20260719_110310
+  image_auroc=0.6590909090909091  pixel_auroc=0.6007276255084747  aupro=0.8369813439658551  dice=0.053649854494041804
+[11:03:12] === OK:    U-Net loto aug-off seed1 ===
+[11:03:12] === START: U-Net loto aug-off seed2 ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[unet/loto] run -> unet_loto_augoff_seed2_20260719_113604
+  image_auroc=0.7159090909090908  pixel_auroc=0.6620536145648412  aupro=0.6215623129639148  dice=0.09930377781219275
+[11:36:06] === OK:    U-Net loto aug-off seed2 ===
+[11:36:06] === START: U-Net fixed aug-on seed42 ===
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[unet/fixed] run -> unet_fixed_augon_seed42_20260719_114030
+  image_auroc=1.0  pixel_auroc=0.9049738437463959  aupro=0.902299213829888  dice=0.45141217975091924
+[11:40:32] === OK:    U-Net fixed aug-on seed42 ===
+[11:40:32] === START: U-Net fixed aug-on seed1 ===
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[unet/fixed] run -> unet_fixed_augon_seed1_20260719_114445
+  image_auroc=1.0  pixel_auroc=0.9115137222664098  aupro=0.9040668514038268  dice=0.5052261427650502
+[11:44:47] === OK:    U-Net fixed aug-on seed1 ===
+[11:44:47] === START: U-Net fixed aug-on seed2 ===
+/workspace/blum/venv-kip/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[unet/fixed] run -> unet_fixed_augon_seed2_20260719_114916
+  image_auroc=0.9333333333333333  pixel_auroc=0.906600067801501  aupro=0.8880655293730583  dice=0.5261761040947184
+[11:49:17] === OK:    U-Net fixed aug-on seed2 ===
+[11:49:17] === START: U-Net fixed aug-off seed42 ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[unet/fixed] run -> unet_fixed_augoff_seed42_20260719_115244
+  image_auroc=1.0  pixel_auroc=0.6930727541343191  aupro=0.8656416319760295  dice=0.19400613458798807
+[11:52:46] === OK:    U-Net fixed aug-off seed42 ===
+[11:52:46] === START: U-Net fixed aug-off seed1 ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[unet/fixed] run -> unet_fixed_augoff_seed1_20260719_115611
+  image_auroc=1.0  pixel_auroc=0.7774729021365504  aupro=0.8759114554688204  dice=0.2810873921268174
+[11:56:13] === OK:    U-Net fixed aug-off seed1 ===
+[11:56:13] === START: U-Net fixed aug-off seed2 ===
+sysctl: cannot stat /proc/sys/machdep/cpu/brand_string: No such file or directory
+
+[unet/fixed] run -> unet_fixed_augoff_seed2_20260719_115941
+  image_auroc=0.8666666666666667  pixel_auroc=0.7578848072208018  aupro=0.88559092086534  dice=0.14853871519929057
+[11:59:42] === OK:    U-Net fixed aug-off seed2 ===
+[11:59:42] ===================== ZUSAMMENFASSUNG =====================
+[11:59:42] OK   PatchCore loto (deterministisch, 1 Lauf)
+[11:59:42] OK   PaDiM loto (deterministisch, 1 Lauf)
+[11:59:42] OK   PatchCore fixed (deterministisch, 1 Lauf)
+[11:59:42] OK   PaDiM fixed (deterministisch, 1 Lauf)
+[11:59:42] OK   ConvAE loto seed42
+[11:59:42] OK   ConvAE loto seed1
+[11:59:42] OK   ConvAE loto seed2
+[11:59:42] OK   ConvAE fixed seed42
+[11:59:42] OK   ConvAE fixed seed1
+[11:59:42] OK   ConvAE fixed seed2
+[11:59:42] OK   U-Net loto aug-on seed42
+[11:59:42] OK   U-Net loto aug-on seed1
+[11:59:42] OK   U-Net loto aug-on seed2
+[11:59:42] OK   U-Net loto aug-off seed42
+[11:59:42] OK   U-Net loto aug-off seed1
+[11:59:42] OK   U-Net loto aug-off seed2
+[11:59:42] OK   U-Net fixed aug-on seed42
+[11:59:42] OK   U-Net fixed aug-on seed1
+[11:59:42] OK   U-Net fixed aug-on seed2
+[11:59:43] OK   U-Net fixed aug-off seed42
+[11:59:43] OK   U-Net fixed aug-off seed1
+[11:59:43] OK   U-Net fixed aug-off seed2
+[11:59:43] OK: 22   FAIL: 0
+[11:59:43] Ergebnisse liegen unter results/defect_detection/ (run_name enthaelt Seed).

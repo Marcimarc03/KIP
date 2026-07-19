@@ -1,0 +1,57 @@
+{
+  "eval_only": true,
+  "note": "Dom\u00e4nenl\u00fccken-Eval eines Checkpoints auf dem korrigierten Testsplit (tool98); NICHT neu trainiert. A_synth_only @640px -> indikativ.",
+  "model": "yolo",
+  "weights": "results/synth1088/seed42/weights/best.pt",
+  "imgsz": 1088,
+  "test_set": "real_v3/test (tool98)",
+  "n_test": 148,
+  "infer_ms_per_image": 64.63,
+  "metrics": {
+    "bbox_map50": 0.3493670488669491,
+    "bbox_map50_95": 0.2587791521217208,
+    "segm_map50": 0.3299627338368621,
+    "segm_map50_95": 0.23424905933971416,
+    "segm_map75": 0.25069759045530343,
+    "precision": 0.26898019678022766,
+    "recall": 0.285065102440605,
+    "per_class": {
+      "anti-vibration_handle": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "bearing_plate": {
+        "segm_ap50": 0.30842886920270973,
+        "segm_ap50_95": 0.25913925021044615
+      },
+      "bevel_gear_drive": {
+        "segm_ap50": 0.0,
+        "segm_ap50_95": 0.0
+      },
+      "bevel_gear_spindle": {
+        "segm_ap50": 0.7089442704565799,
+        "segm_ap50_95": 0.5119933931235836
+      },
+      "gearbox_housing": {
+        "segm_ap50": 0.2635648745129153,
+        "segm_ap50_95": 0.17332510660965816
+      },
+      "intermediate_gearbox": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "motor_housing": {
+        "segm_ap50": 0.6691354185519379,
+        "segm_ap50_95": 0.4372742298569733
+      },
+      "shaft": {
+        "segm_ap50": 0.029702970297029695,
+        "segm_ap50_95": 0.023762376237623756
+      },
+      "wheel_guard": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      }
+    }
+  }
+}
