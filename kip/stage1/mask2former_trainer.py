@@ -270,8 +270,10 @@ class Mask2FormerTrainer:
         id2label = {i: name for i, name in enumerate(CLASS_NAMES)}
         label2id = {v: k for k, v in id2label.items()}
 
+        _init_id = os.environ.get("KIP_M2F_INIT", _MODEL_ID)
+        print(f"[M2F] Initialisierung von: {_init_id}")
         model = Mask2FormerForUniversalSegmentation.from_pretrained(
-            _MODEL_ID,
+            _init_id,
             num_labels=len(CLASS_NAMES),
             id2label=id2label,
             label2id=label2id,
