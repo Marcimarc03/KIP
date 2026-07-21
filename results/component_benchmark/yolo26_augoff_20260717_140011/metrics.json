@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "run_id": "yolo26_augoff_20260717_140011",
+  "stage": 1,
+  "model": "yolo26",
+  "tag": "",
+  "init_weights": "yolo26n-seg.pt",
+  "augmentation": false,
+  "seed": 2,
+  "smoke": false,
+  "device": "cuda:0",
+  "environment": {
+    "kip_workers": 0,
+    "rebuilt_from_predictions": true
+  },
+  "split": {
+    "scheme": "tool_disjoint_tool10+tool98",
+    "n_folds": 1,
+    "test_set": "real_v3/test",
+    "fingerprint": {
+      "n_test": 148,
+      "test_tools": [
+        "tool10",
+        "tool98"
+      ],
+      "test_json_sha256": "deda10926453225a",
+      "n_classes_total": 9,
+      "n_classes_in_test_gt": 6,
+      "test_category_ids": [
+        2,
+        3,
+        4,
+        5,
+        7,
+        8
+      ]
+    }
+  },
+  "dataset": {
+    "n_test": 148
+  },
+  "metrics": {
+    "bbox_map50": 0.6939171901927922,
+    "bbox_map50_95": 0.6028363717979938,
+    "segm_map50": 0.6484171222985533,
+    "segm_map50_95": 0.5344509070914422,
+    "segm_map75": 0.5581367932126549,
+    "precision": 0.5979185738258527,
+    "recall": 0.6182120230260904,
+    "per_class": {
+      "anti-vibration_handle": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "bearing_plate": {
+        "segm_ap50": 0.586145925627149,
+        "segm_ap50_95": 0.45265864813106244
+      },
+      "bevel_gear_drive": {
+        "segm_ap50": 0.5797029702970297,
+        "segm_ap50_95": 0.42265668539432444
+      },
+      "bevel_gear_spindle": {
+        "segm_ap50": 0.855102861879958,
+        "segm_ap50_95": 0.7960488852629565
+      },
+      "gearbox_housing": {
+        "segm_ap50": 0.41614161416141615,
+        "segm_ap50_95": 0.37955915880120833
+      },
+      "intermediate_gearbox": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "motor_housing": {
+        "segm_ap50": 0.8916438948230783,
+        "segm_ap50_95": 0.6629616138311419
+      },
+      "shaft": {
+        "segm_ap50": 0.561765467002689,
+        "segm_ap50_95": 0.49282045112795925
+      },
+      "wheel_guard": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      }
+    }
+  },
+  "note": "metrics.json nachtraeglich aus vorhandenen Predictions erzeugt (kein Neutraining); identische evaluate_coco-Logik."
+}
