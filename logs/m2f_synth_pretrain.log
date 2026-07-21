@@ -1,0 +1,189 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] You passed `num_labels=9` which is incompatible to the `id2label` map of length `80`.
+[pretrain] synth-COCO : /workspace/blum/KIP/data/coco_synth/train.json
+[pretrain] Bilder     : /workspace/blum/KIP/data/synth_Daten/images/train
+[pretrain] Ausgabe    : /workspace/blum/KIP/results/m2f_synth1088
+[pretrain] epochs=100 batch=8 lr=0.0001 freeze=20 seed=42
+[M2F] Initialisierung von: facebook/mask2former-swin-tiny-coco-instance
+Loading weights:   0%|          | 0/554 [00:00<?, ?it/s]Loading weights:  63%|██████▎   | 351/554 [00:00<00:00, 3505.36it/s]Loading weights: 100%|██████████| 554/554 [00:00<00:00, 3465.81it/s]
+[transformers] [1mMask2FormerForUniversalSegmentation LOAD REPORT[0m from: facebook/mask2former-swin-tiny-coco-instance
+Key                                                                                                                                | Status     |                                                                                         
+-----------------------------------------------------------------------------------------------------------------------------------+------------+-----------------------------------------------------------------------------------------
+model.pixel_level_module.encoder.swin.encoder.layers.{0, 1, 2, 3}.blocks.{0, 1, 2, 3, 4, 5}.attention.self.relative_position_index | UNEXPECTED |                                                                                         
+model.pixel_level_module.encoder.swin.layernorm.weight                                                                             | MISSING    |                                                                                         
+model.pixel_level_module.encoder.swin.layernorm.bias                                                                               | MISSING    |                                                                                         
+class_predictor.weight                                                                                                             | MISMATCH   | Reinit due to size mismatch - ckpt: torch.Size([81, 256]) vs model:torch.Size([10, 256])
+criterion.empty_weight                                                                                                             | MISMATCH   | Reinit due to size mismatch - ckpt: torch.Size([81]) vs model:torch.Size([10])          
+class_predictor.bias                                                                                                               | MISMATCH   | Reinit due to size mismatch - ckpt: torch.Size([81]) vs model:torch.Size([10])          
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+- MISMATCH:	ckpt weights were loaded, but they did not match the original empty weight shapes.
+/workspace/blum/venv-kip/lib/python3.12/site-packages/torch/nn/functional.py:3555: UserWarning: nll_loss2d_forward_out_cuda_template does not have a deterministic implementation, but you set 'torch.use_deterministic_algorithms(True, warn_only=True)'. You can file an issue at https://github.com/pytorch/pytorch/issues to help us prioritize adding deterministic support for this operation. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/Context.cpp:186.)
+  return torch._C._nn.cross_entropy_loss(
+/workspace/blum/venv-kip/lib/python3.12/site-packages/torch/autograd/graph.py:979: UserWarning: grid_sampler_2d_backward_cuda does not have a deterministic implementation, but you set 'torch.use_deterministic_algorithms(True, warn_only=True)'. You can file an issue at https://github.com/pytorch/pytorch/issues to help us prioritize adding deterministic support for this operation. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/Context.cpp:186.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[M2F epoch 1/100] loss=22.8043
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  3.46it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  3.46it/s]
+[M2F epoch 2/100] loss=15.9722
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.32it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.32it/s]
+[M2F epoch 3/100] loss=14.0903
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.86it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.86it/s]
+[M2F epoch 4/100] loss=12.8292
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.77it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.77it/s]
+[M2F epoch 5/100] loss=12.0080
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.99it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.99it/s]
+[M2F epoch 6/100] loss=11.3566
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.00s/it]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.00s/it]
+[M2F epoch 7/100] loss=11.0300
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.82it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.82it/s]
+[M2F epoch 8/100] loss=10.5340
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.54it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.54it/s]
+[M2F epoch 9/100] loss=10.1375
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.94it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.94it/s]
+[M2F epoch 10/100] loss=9.8207
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.05s/it]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.05s/it]
+[M2F epoch 11/100] loss=9.3962
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.06it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.06it/s]
+[M2F epoch 12/100] loss=9.0578
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.26it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.26it/s]
+[M2F epoch 13/100] loss=9.0722
+[M2F epoch 14/100] loss=8.7959
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.84it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.84it/s]
+[M2F epoch 15/100] loss=8.5241
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.27s/it]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.27s/it]
+[M2F epoch 16/100] loss=8.3602
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.59it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.59it/s]
+[M2F epoch 17/100] loss=8.3567
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.68it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.68it/s]
+[M2F epoch 18/100] loss=8.1173
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.78it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.78it/s]
+[M2F epoch 19/100] loss=7.8765
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.15it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.15it/s]
+[M2F epoch 20/100] loss=7.7048
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.65it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.65it/s]
+/workspace/blum/venv-kip/lib/python3.12/site-packages/torch/autograd/graph.py:979: UserWarning: Memory Efficient attention defaults to a non-deterministic algorithm. To explicitly enable determinism call torch.use_deterministic_algorithms(True, warn_only=False). (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/transformers/cuda/attention_backward.cu:833.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[M2F epoch 21/100] loss=7.3971
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.73it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.73it/s]
+[M2F epoch 22/100] loss=7.0210
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.22it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.22it/s]
+[M2F epoch 23/100] loss=6.8113
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.00s/it]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.00s/it]
+[M2F epoch 24/100] loss=6.7089
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.43it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.43it/s]
+[M2F epoch 25/100] loss=6.8148
+[M2F epoch 26/100] loss=6.7339
+[M2F epoch 27/100] loss=6.5937
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.45it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.45it/s]
+[M2F epoch 28/100] loss=6.6494
+[M2F epoch 29/100] loss=6.5987
+[M2F epoch 30/100] loss=6.3889
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.03it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.03it/s]
+[M2F epoch 31/100] loss=6.3303
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.56it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.56it/s]
+[M2F epoch 32/100] loss=6.2549
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.69it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.69it/s]
+[M2F epoch 33/100] loss=6.2299
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.69it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.69it/s]
+[M2F epoch 34/100] loss=6.0345
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.68it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.68it/s]
+[M2F epoch 35/100] loss=6.1087
+[M2F epoch 36/100] loss=6.0115
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.18s/it]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.18s/it]
+[M2F epoch 37/100] loss=6.0127
+[M2F epoch 38/100] loss=5.7972
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.50it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.50it/s]
+[M2F epoch 39/100] loss=5.7172
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.81it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.81it/s]
+[M2F epoch 40/100] loss=5.6005
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.52it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.52it/s]
+[M2F epoch 41/100] loss=5.7346
+[M2F epoch 42/100] loss=5.6137
+[M2F epoch 43/100] loss=5.5102
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.83it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.83it/s]
+[M2F epoch 44/100] loss=5.5958
+[M2F epoch 45/100] loss=5.5595
+[M2F epoch 46/100] loss=5.4614
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.66it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.66it/s]
+[M2F epoch 47/100] loss=5.4093
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.78it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.78it/s]
+[M2F epoch 48/100] loss=5.2452
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.52it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.52it/s]
+[M2F epoch 49/100] loss=5.3849
+[M2F epoch 50/100] loss=5.2984
+[M2F epoch 51/100] loss=5.2344
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.67it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.67it/s]
+[M2F epoch 52/100] loss=5.1851
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.57it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.57it/s]
+[M2F epoch 53/100] loss=5.0950
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.31it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.31it/s]
+[M2F epoch 54/100] loss=5.0982
+[M2F epoch 55/100] loss=5.1528
+[M2F epoch 56/100] loss=4.9900
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.65it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.65it/s]
+[M2F epoch 57/100] loss=5.0220
+[M2F epoch 58/100] loss=4.9471
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.11it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.11it/s]
+[M2F epoch 59/100] loss=4.9530
+[M2F epoch 60/100] loss=4.9223
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.16it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.16it/s]
+[M2F epoch 61/100] loss=5.0151
+[M2F epoch 62/100] loss=4.8090
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.89it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.89it/s]
+[M2F epoch 63/100] loss=4.8022
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.14it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.13it/s]
+[M2F epoch 64/100] loss=4.8562
+[M2F epoch 65/100] loss=4.8442
+[M2F epoch 66/100] loss=4.8133
+[M2F epoch 67/100] loss=4.7015
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.36it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.36it/s]
+[M2F epoch 68/100] loss=4.7396
+[M2F epoch 69/100] loss=4.7092
+[M2F epoch 70/100] loss=4.7193
+[M2F epoch 71/100] loss=4.5902
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.57it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.57it/s]
+[M2F epoch 72/100] loss=4.6414
+[M2F epoch 73/100] loss=4.6556
+[M2F epoch 74/100] loss=4.7108
+[M2F epoch 75/100] loss=4.5851
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.40it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.40it/s]
+[M2F epoch 76/100] loss=4.6154
+[M2F epoch 77/100] loss=4.5323
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.06it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.06it/s]
+[M2F epoch 78/100] loss=4.6163
+[M2F epoch 79/100] loss=4.5323
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.88it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.88it/s]
+[M2F epoch 80/100] loss=4.4785
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.17it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.17it/s]
+[M2F epoch 81/100] loss=4.5863
+[M2F epoch 82/100] loss=4.6087
+[M2F epoch 83/100] loss=4.5564
+[M2F epoch 84/100] loss=4.5532
+[M2F epoch 85/100] loss=4.4989
+[M2F epoch 86/100] loss=4.5864
+[M2F epoch 87/100] loss=4.4492
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.85it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.85it/s]
+[M2F epoch 88/100] loss=4.5130
+[M2F epoch 89/100] loss=4.4852
+[M2F epoch 90/100] loss=4.4609
+[M2F epoch 91/100] loss=4.4368
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.27it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.27it/s]
+[M2F epoch 92/100] loss=4.4544
+[M2F epoch 93/100] loss=4.4655
+[M2F epoch 94/100] loss=4.4348
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.09it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.09it/s]
+[M2F epoch 95/100] loss=4.4437
+[M2F epoch 96/100] loss=4.4197
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.49it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  2.49it/s]
+[M2F epoch 97/100] loss=4.4506
+[M2F epoch 98/100] loss=4.4939
+[M2F epoch 99/100] loss=4.4171
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.65it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.65it/s]
+[M2F epoch 100/100] loss=4.4794
+[M2F] Training done in 43100.7s. Best loss: 4.4171. Checkpoint: /workspace/blum/KIP/results/m2f_synth1088/checkpoints
+[pretrain] fertig in 11.97 h
+[pretrain] CHECKPOINT: /workspace/blum/KIP/results/m2f_synth1088/checkpoints
+[pretrain] Fuer das Finetuning:
+    export KIP_M2F_INIT=/workspace/blum/KIP/results/m2f_synth1088/checkpoints
