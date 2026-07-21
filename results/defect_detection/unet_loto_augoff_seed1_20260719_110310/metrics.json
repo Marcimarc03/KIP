@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0",
+  "run_id": "unet_loto_augoff_seed1_20260719_110310",
+  "stage": 2,
+  "model": "unet",
+  "augmentation": false,
+  "seed": 1,
+  "smoke": false,
+  "device": "cuda:0",
+  "split": {
+    "scheme": "loto",
+    "n_folds": 7,
+    "test_set": "bgad_pooled"
+  },
+  "dataset": {
+    "n_images": 19,
+    "n_good": 8,
+    "n_defect": 11
+  },
+  "metrics": {
+    "pooled": {
+      "image_auroc": 0.6590909090909091,
+      "image_f1": 0.7407407402578874,
+      "image_f1_threshold": 5.704277509186058,
+      "pixel_auroc": 0.6007276255084747,
+      "pixel_aupro": 0.8369813439658551,
+      "pixel_f1": null,
+      "dice": 0.053649854494041804,
+      "iou": 0.030911558145745723
+    },
+    "per_fold": [
+      {
+        "fold": "loto_tool02",
+        "held_out_tools": [
+          "tool02"
+        ],
+        "n_test": 7,
+        "n_defect": 4,
+        "image_auroc": 0.08333333333333334,
+        "pixel_auroc": 0.6088850953189582,
+        "pixel_aupro": 0.9508373177342765
+      },
+      {
+        "fold": "loto_tool03",
+        "held_out_tools": [
+          "tool03"
+        ],
+        "n_test": 1,
+        "n_defect": 1,
+        "image_auroc": null,
+        "pixel_auroc": 0.6606171811675079,
+        "pixel_aupro": 0.8114002911899657
+      },
+      {
+        "fold": "loto_tool08",
+        "held_out_tools": [
+          "tool08"
+        ],
+        "n_test": 2,
+        "n_defect": 2,
+        "image_auroc": null,
+        "pixel_auroc": 0.6108968854104397,
+        "pixel_aupro": 0.9077609876799996
+      },
+      {
+        "fold": "loto_tool09",
+        "held_out_tools": [
+          "tool09"
+        ],
+        "n_test": 2,
+        "n_defect": 2,
+        "image_auroc": null,
+        "pixel_auroc": 0.7855640076826106,
+        "pixel_aupro": 0.7978770532980357
+      },
+      {
+        "fold": "loto_tool10",
+        "held_out_tools": [
+          "tool10"
+        ],
+        "n_test": 2,
+        "n_defect": 2,
+        "image_auroc": null,
+        "pixel_auroc": 0.48633044212588117,
+        "pixel_aupro": 0.7101012756019972
+      },
+      {
+        "fold": "loto_tool97",
+        "held_out_tools": [
+          "tool97"
+        ],
+        "n_test": 3,
+        "n_defect": 0,
+        "image_auroc": null,
+        "pixel_auroc": null,
+        "pixel_aupro": null
+      },
+      {
+        "fold": "loto_tool99",
+        "held_out_tools": [
+          "tool99"
+        ],
+        "n_test": 2,
+        "n_defect": 0,
+        "image_auroc": null,
+        "pixel_auroc": null,
+        "pixel_aupro": null
+      }
+    ]
+  },
+  "timestamp_utc": "2026-07-21T13:57:27.432780+00:00",
+  "note": "metrics.json aus gespeicherten Predictions rekonstruiert (scores.csv + amaps.npz); identische Metrik-Funktionen wie im Lauf."
+}

@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "run_id": "unet_fixed_augoff_seed2_20260719_115941",
+  "stage": 2,
+  "model": "unet",
+  "augmentation": false,
+  "seed": 2,
+  "smoke": false,
+  "device": "cuda:0",
+  "split": {
+    "scheme": "fixed",
+    "n_folds": 1,
+    "test_set": "bgad_pooled"
+  },
+  "dataset": {
+    "n_images": 8,
+    "n_good": 3,
+    "n_defect": 5
+  },
+  "metrics": {
+    "pooled": {
+      "image_auroc": 0.8666666666666667,
+      "image_f1": 0.8888888883950617,
+      "image_f1_threshold": 62.959474454671785,
+      "pixel_auroc": 0.7578848072208018,
+      "pixel_aupro": 0.88559092086534,
+      "pixel_f1": null,
+      "dice": 0.14853871519929057,
+      "iou": 0.08399540810559532
+    },
+    "per_fold": [
+      {
+        "fold": "fixed",
+        "held_out_tools": [
+          "tool02",
+          "tool03",
+          "tool08",
+          "tool09",
+          "tool10",
+          "tool97",
+          "tool99"
+        ],
+        "n_test": 8,
+        "n_defect": 5,
+        "image_auroc": 0.8666666666666667,
+        "pixel_auroc": 0.7578848072208018,
+        "pixel_aupro": 0.88559092086534
+      }
+    ]
+  },
+  "timestamp_utc": "2026-07-21T13:56:46.824630+00:00",
+  "note": "metrics.json aus gespeicherten Predictions rekonstruiert (scores.csv + amaps.npz); identische Metrik-Funktionen wie im Lauf."
+}

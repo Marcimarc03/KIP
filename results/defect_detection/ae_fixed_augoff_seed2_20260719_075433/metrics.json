@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "run_id": "ae_fixed_augoff_seed2_20260719_075433",
+  "stage": 2,
+  "model": "ae",
+  "augmentation": false,
+  "seed": 2,
+  "smoke": false,
+  "device": "cuda:0",
+  "split": {
+    "scheme": "fixed",
+    "n_folds": 1,
+    "test_set": "bgad_pooled"
+  },
+  "dataset": {
+    "n_images": 8,
+    "n_good": 3,
+    "n_defect": 5
+  },
+  "metrics": {
+    "pooled": {
+      "image_auroc": 0.7333333333333334,
+      "image_f1": 0.8333333328472221,
+      "image_f1_threshold": -0.016673564153745,
+      "pixel_auroc": 0.6433649931218033,
+      "pixel_aupro": 0.7501090666413885,
+      "pixel_f1": null,
+      "dice": null,
+      "iou": null
+    },
+    "per_fold": [
+      {
+        "fold": "fixed",
+        "held_out_tools": [
+          "tool02",
+          "tool03",
+          "tool08",
+          "tool09",
+          "tool10",
+          "tool97",
+          "tool99"
+        ],
+        "n_test": 8,
+        "n_defect": 5,
+        "image_auroc": 0.7333333333333334,
+        "pixel_auroc": 0.6433649931218033,
+        "pixel_aupro": 0.7501090666413885
+      }
+    ]
+  },
+  "timestamp_utc": "2026-07-21T13:54:33.872739+00:00",
+  "note": "metrics.json aus gespeicherten Predictions rekonstruiert (scores.csv + amaps.npz); identische Metrik-Funktionen wie im Lauf."
+}

@@ -1,0 +1,11 @@
+method: unet
+split: fixed
+augmentation: true
+seed: 1
+epochs: 300
+tile_size: 256
+device: cuda:0
+smoke: false
+fg_quantile: 0.98
+coreset_ratio: 0.1
+rebuilt_from_predictions: true
