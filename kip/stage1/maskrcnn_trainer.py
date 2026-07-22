@@ -22,6 +22,7 @@ Usage (via run_stage1.py):
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Union
 
@@ -37,6 +38,7 @@ from torchvision.models.detection import (
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
 
+from kip import CLASS_NAMES
 from kip.config import Stage1Config
 
 # Smoke: train on ~40 images so the path exercises end-to-end quickly.
@@ -116,9 +118,13 @@ class MaskRCNNTrainer:
         self.images_dir = Path(images_dir)
         self.run_dir = Path(run_dir)
         self._train_coco = COCO(str(coco_train_json))
-        cat_ids = self._train_coco.getCatIds()
-        # labels == COCO cat id -> need max(cat_id)+1 slots (0 = background)
-        self.num_classes = max(cat_ids) + 1
+        # Fixed class scheme (kip.CLASS_NAMES = 9 slots; label 0 doubles as
+        # torchvision background, harmless as cat_id 0 never appears in real
+        # data). Pinning to len(CLASS_NAMES) instead of max(cat_id)+1 guarantees
+        # that a synth-pretrained checkpoint always transfers into the real
+        # model with identical head sizes, regardless of which cat_ids a given
+        # split happens to contain. For our data both equal 9.
+        self.num_classes = len(CLASS_NAMES)
         self._model = None
 
     def _build(self):
@@ -147,6 +153,13 @@ class MaskRCNNTrainer:
             collate_fn=lambda b: tuple(zip(*b)),
         )
         model = self._build()
+        # Optional synth-pretrained initialisation (leakage-free: the synthetic
+        # data contains no real tool). Mirrors KIP_M2F_INIT for Mask2Former;
+        # heads match because num_classes is fixed to len(CLASS_NAMES).
+        init = os.environ.get("KIP_MASKRCNN_INIT")
+        if init:
+            model.load_state_dict(torch.load(init, map_location=self.device))
+            print(f"[maskrcnn] Synth-Init geladen: {init}", flush=True)
         model.train()
         params = [p for p in model.parameters() if p.requires_grad]
         # lr nach torchvision-Referenz auf batch skaliert (0.02 @ batch16 -> ~0.0025 @ batch2)

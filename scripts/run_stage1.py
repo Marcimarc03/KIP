@@ -204,6 +204,11 @@ def main(argv=None) -> None:
     import torch as _torch
     kip_workers = int(os.environ.get("KIP_WORKERS", "8"))
     env_info = {"kip_workers": kip_workers, "torch": _torch.__version__}
+    # Record synth-init env overrides so the synth-vs-real ablation is traceable
+    # for M2F / Mask R-CNN (which init via env var, not via --weights).
+    for _k in ("KIP_M2F_INIT", "KIP_MASKRCNN_INIT"):
+        if os.environ.get(_k):
+            env_info[_k.lower()] = os.environ[_k]
     try:
         import ultralytics as _ultra
         env_info["ultralytics"] = _ultra.__version__
