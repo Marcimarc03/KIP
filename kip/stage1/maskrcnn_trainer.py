@@ -62,6 +62,10 @@ class _CocoInstances(torch.utils.data.Dataset):
         self.images_dir = Path(images_dir)
         self.augment = augment
         self.ids = list(sorted(self.coco.imgs.keys()))
+        # In-RAM cache of decoded RGB images: avoids re-reading/-decoding every
+        # image on every epoch. With num_workers=0 (required on the DGX, tiny
+        # /dev/shm) this is the main speedup; masks are cheap to re-rasterise.
+        self._rgb_cache: dict[int, np.ndarray] = {}
 
     def __len__(self) -> int:
         return len(self.ids)
@@ -69,8 +73,11 @@ class _CocoInstances(torch.utils.data.Dataset):
     def __getitem__(self, i: int):
         img_id = self.ids[i]
         info = self.coco.imgs[img_id]
-        bgr = cv2.imread(str(self.images_dir / info["file_name"]))
-        rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
+        rgb = self._rgb_cache.get(i)
+        if rgb is None:
+            bgr = cv2.imread(str(self.images_dir / info["file_name"]))
+            rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
+            self._rgb_cache[i] = rgb
         h, w = rgb.shape[:2]
 
         anns = self.coco.loadAnns(self.coco.getAnnIds(imgIds=img_id))
@@ -156,11 +163,12 @@ class MaskRCNNTrainer:
         # (~18 h/run observed). Parallel workers overlap loading with compute.
         # Smoke uses 0 (few images, avoids spawn overhead). The worker order adds
         # only noise, which the multi-seed mean+-std already absorbs.
-        nw = 0 if self.cfg.smoke else int(os.environ.get("KIP_MRCNN_WORKERS", "8"))
+        # Default 0 workers: the DGX container's tiny /dev/shm cannot handle
+        # multiprocessing DataLoaders (shm exhaustion). Speed comes from the
+        # in-RAM RGB cache instead. KIP_MRCNN_WORKERS>0 only for hosts with a
+        # large /dev/shm; then file_system sharing avoids the shm limit.
+        nw = 0 if self.cfg.smoke else int(os.environ.get("KIP_MRCNN_WORKERS", "0"))
         if nw > 0:
-            # DGX container has a tiny /dev/shm -> the default fd-based sharing
-            # strategy runs out of shared memory ("No space left on device").
-            # file_system exchanges worker tensors via temp files instead.
             torch.multiprocessing.set_sharing_strategy("file_system")
         loader = torch.utils.data.DataLoader(
             ds,
@@ -168,8 +176,8 @@ class MaskRCNNTrainer:
             shuffle=True,
             collate_fn=_collate,
             num_workers=nw,
-            pin_memory=True,
-            persistent_workers=nw > 0,
+            pin_memory=(nw > 0),
+            persistent_workers=(nw > 0),
         )
         model = self._build()
         # Optional synth-pretrained initialisation (leakage-free: the synthetic
