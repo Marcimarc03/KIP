@@ -157,6 +157,11 @@ class MaskRCNNTrainer:
         # Smoke uses 0 (few images, avoids spawn overhead). The worker order adds
         # only noise, which the multi-seed mean+-std already absorbs.
         nw = 0 if self.cfg.smoke else int(os.environ.get("KIP_MRCNN_WORKERS", "8"))
+        if nw > 0:
+            # DGX container has a tiny /dev/shm -> the default fd-based sharing
+            # strategy runs out of shared memory ("No space left on device").
+            # file_system exchanges worker tensors via temp files instead.
+            torch.multiprocessing.set_sharing_strategy("file_system")
         loader = torch.utils.data.DataLoader(
             ds,
             batch_size=self.cfg.batch,
