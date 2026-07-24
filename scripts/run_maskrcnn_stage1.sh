@@ -55,7 +55,7 @@ done
 
 # --- 2. Synthetik-Ablation: 1x synth-Vortraining, dann real-Finetuning 3 Seeds ---
 run_step "MaskRCNN synth-Vortraining (1x)" \
-  python scripts/pretrain_maskrcnn_synth.py --epochs 100 --batch "$BATCH" --imgsz 800 --device cuda:0 --seed 42 --aug on
+  python scripts/pretrain_maskrcnn_synth.py --epochs 50 --batch "$BATCH" --imgsz 800 --device cuda:0 --seed 42 --aug on
 if [ -f "$SYNTH_CKPT" ]; then
   export KIP_MASKRCNN_INIT="$SYNTH_CKPT"
   log "KIP_MASKRCNN_INIT=$KIP_MASKRCNN_INIT"

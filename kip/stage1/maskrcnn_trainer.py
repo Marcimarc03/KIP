@@ -45,6 +45,11 @@ from kip.config import Stage1Config
 _SMOKE_N = 40
 
 
+def _collate(batch):
+    """Module-level collate (picklable -> works with num_workers > 0 on all OS)."""
+    return tuple(zip(*batch))
+
+
 class _CocoInstances(torch.utils.data.Dataset):
     """COCO ground truth -> (image tensor CHW in [0, 1], target dict).
 
@@ -146,11 +151,20 @@ class MaskRCNNTrainer:
         )
         if self.cfg.smoke:
             ds = torch.utils.data.Subset(ds, list(range(min(_SMOKE_N, len(ds)))))
+        # num_workers > 0 is essential here: with 0 workers the serial loading of
+        # large 800px images on the shared, contended DGX CPU starves the GPU
+        # (~18 h/run observed). Parallel workers overlap loading with compute.
+        # Smoke uses 0 (few images, avoids spawn overhead). The worker order adds
+        # only noise, which the multi-seed mean+-std already absorbs.
+        nw = 0 if self.cfg.smoke else int(os.environ.get("KIP_MRCNN_WORKERS", "8"))
         loader = torch.utils.data.DataLoader(
             ds,
             batch_size=self.cfg.batch,
             shuffle=True,
-            collate_fn=lambda b: tuple(zip(*b)),
+            collate_fn=_collate,
+            num_workers=nw,
+            pin_memory=True,
+            persistent_workers=nw > 0,
         )
         model = self._build()
         # Optional synth-pretrained initialisation (leakage-free: the synthetic
