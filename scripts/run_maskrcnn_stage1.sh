@@ -45,12 +45,15 @@ if [ "${N:-0}" != "148" ] || [ "${T:-x}" != "tool10,tool98" ]; then
 fi
 log "Split: n_test=${N:-?}  tools=${T:-?}  (Option B ok)"
 
-# --- 1. Architektur + Augmentierung: aug-on / aug-off, je 3 Seeds ---
+# --- 1a. aug-on ALLE Seeds zuerst (Haupttabellen-Zeile, hoechste Prioritaet) ---
 for s in "${SEEDS[@]}"; do
   run_step "MaskRCNN aug-on seed$s (=realonly)" \
-    python scripts/run_stage1.py --model maskrcnn --aug on  --epochs 60 --imgsz 800 --batch "$BATCH" --device cuda:0 --seed "$s" --tag realonly
+    python scripts/run_stage1.py --model maskrcnn --aug on  --epochs 40 --imgsz 800 --batch "$BATCH" --device cuda:0 --seed "$s" --tag realonly
+done
+# --- 1b. aug-off ALLE Seeds (Augmentierungs-Ablation) ---
+for s in "${SEEDS[@]}"; do
   run_step "MaskRCNN aug-off seed$s" \
-    python scripts/run_stage1.py --model maskrcnn --aug off --epochs 60 --imgsz 800 --batch "$BATCH" --device cuda:0 --seed "$s" --tag realonly
+    python scripts/run_stage1.py --model maskrcnn --aug off --epochs 40 --imgsz 800 --batch "$BATCH" --device cuda:0 --seed "$s" --tag realonly
 done
 
 # --- 2. Synthetik-Ablation: 1x synth-Vortraining, dann real-Finetuning 3 Seeds ---
@@ -61,7 +64,7 @@ if [ -f "$SYNTH_CKPT" ]; then
   log "KIP_MASKRCNN_INIT=$KIP_MASKRCNN_INIT"
   for s in "${SEEDS[@]}"; do
     run_step "MaskRCNN synth-pretrain->real seed$s" \
-      python scripts/run_stage1.py --model maskrcnn --aug on --epochs 60 --imgsz 800 --batch "$BATCH" --device cuda:0 --seed "$s" --tag synthpretrain
+      python scripts/run_stage1.py --model maskrcnn --aug on --epochs 40 --imgsz 800 --batch "$BATCH" --device cuda:0 --seed "$s" --tag synthpretrain
   done
   unset KIP_MASKRCNN_INIT
 else
