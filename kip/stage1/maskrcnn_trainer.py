@@ -63,10 +63,6 @@ class _CocoInstances(torch.utils.data.Dataset):
         self.images_dir = Path(images_dir)
         self.augment = augment
         self.ids = list(sorted(self.coco.imgs.keys()))
-        # In-RAM cache of decoded RGB images: avoids re-reading/-decoding every
-        # image on every epoch. With num_workers=0 (required on the DGX, tiny
-        # /dev/shm) this is the main speedup; masks are cheap to re-rasterise.
-        self._rgb_cache: dict[int, np.ndarray] = {}
 
     def __len__(self) -> int:
         return len(self.ids)
@@ -74,11 +70,8 @@ class _CocoInstances(torch.utils.data.Dataset):
     def __getitem__(self, i: int):
         img_id = self.ids[i]
         info = self.coco.imgs[img_id]
-        rgb = self._rgb_cache.get(i)
-        if rgb is None:
-            bgr = cv2.imread(str(self.images_dir / info["file_name"]))
-            rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
-            self._rgb_cache[i] = rgb
+        bgr = cv2.imread(str(self.images_dir / info["file_name"]))
+        rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
         h, w = rgb.shape[:2]
 
         anns = self.coco.loadAnns(self.coco.getAnnIds(imgIds=img_id))
@@ -186,8 +179,10 @@ class MaskRCNNTrainer:
             print(f"[maskrcnn] Synth-Init geladen: {init}", flush=True)
         model.train()
         params = [p for p in model.parameters() if p.requires_grad]
-        # lr nach torchvision-Referenz auf batch skaliert (0.02 @ batch16 -> ~0.0025 @ batch2)
-        base_lr = 0.0025
+        # lr linear an die Batch-Groesse gekoppelt (torchvision-Referenz 0.02 @ batch 16
+        # -> 0.00125 * batch): batch2->0.0025, batch4->0.005, batch8->0.01. Ohne diese
+        # Kopplung waere die lr bei groesserer Batch zu niedrig -> Unterkonvergenz.
+        base_lr = 0.00125 * self.cfg.batch
         opt = torch.optim.SGD(params, lr=base_lr, momentum=0.9, weight_decay=5e-4)
 
         ckpt = self.run_dir / "weights" / "maskrcnn.pt"

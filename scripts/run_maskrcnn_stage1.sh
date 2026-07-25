@@ -20,7 +20,7 @@ TS=$(date +%Y%m%d_%H%M)
 MASTER="logs/maskrcnn_${TS}.log"
 declare -a RESULTS=()
 SEEDS=(42 1 2)
-BATCH=4
+BATCH=8   # konsistent zu den anderen Modellen (M2F batch 8); Aufloesung an Speicher angepasst
 SYNTH_CKPT="results/maskrcnn_synth/weights/maskrcnn.pt"
 
 log(){ echo "[$(date +%H:%M:%S)] $*" | tee -a "$MASTER"; }
