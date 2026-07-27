@@ -76,6 +76,7 @@ def main() -> None:
         coco_val_json=val_json,
         images_dir=_SYNTH_IMAGES,
         run_dir=_OUT,
+        label_offset=-1,   # Synth ist 1-indiziert -> auf 0-indizierten Real-Klassenraum bringen
     )
 
     t0 = time.time()

@@ -58,10 +58,16 @@ class _CocoInstances(torch.utils.data.Dataset):
     Optional horizontal-flip augmentation adjusts boxes and masks consistently.
     """
 
-    def __init__(self, coco: COCO, images_dir: Union[str, Path], augment: bool = False):
+    def __init__(self, coco: COCO, images_dir: Union[str, Path], augment: bool = False,
+                 label_offset: int = 0):
         self.coco = coco
         self.images_dir = Path(images_dir)
         self.augment = augment
+        # label_offset korrigiert abweichende cat_id-Konventionen: die realen
+        # Daten sind 0-indiziert (cat_id == torchvision-Label), die synthetischen
+        # 1-indiziert -> offset=-1 bringt sie in denselben Klassenraum, sodass der
+        # Synth-Checkpoint kompatibel ins Real-Finetuning laedt.
+        self.label_offset = label_offset
         self.ids = list(sorted(self.coco.imgs.keys()))
 
     def __len__(self) -> int:
@@ -80,8 +86,11 @@ class _CocoInstances(torch.utils.data.Dataset):
             bx, by, bw, bh = a["bbox"]
             if bw <= 0 or bh <= 0:
                 continue
+            lbl = int(a["category_id"]) + self.label_offset
+            if lbl < 1:                       # Background-Index (nach Synth-Remap) -> ueberspringen
+                continue
             boxes.append([bx, by, bx + bw, by + bh])
-            labels.append(int(a["category_id"]))          # == COCO cat id
+            labels.append(lbl)
             masks.append(self.coco.annToMask(a))
 
         img = torch.as_tensor(rgb / 255.0, dtype=torch.float32).permute(2, 0, 1)
@@ -118,11 +127,13 @@ class MaskRCNNTrainer:
         coco_val_json: Union[str, Path],
         images_dir: Union[str, Path],
         run_dir: Union[str, Path],
+        label_offset: int = 0,
     ):
         self.cfg = cfg
         self.device = cfg.device
         self.images_dir = Path(images_dir)
         self.run_dir = Path(run_dir)
+        self.label_offset = label_offset      # -1 fuer synth (1-indiziert), 0 fuer real
         self._train_coco = COCO(str(coco_train_json))
         # Fixed class scheme (kip.CLASS_NAMES = 9 slots; label 0 doubles as
         # torchvision background, harmless as cat_id 0 never appears in real
@@ -148,7 +159,8 @@ class MaskRCNNTrainer:
 
     def train(self) -> Path:
         ds: torch.utils.data.Dataset = _CocoInstances(
-            self._train_coco, self.images_dir, augment=self.cfg.augmentation
+            self._train_coco, self.images_dir, augment=self.cfg.augmentation,
+            label_offset=self.label_offset,
         )
         if self.cfg.smoke:
             ds = torch.utils.data.Subset(ds, list(range(min(_SMOKE_N, len(ds)))))
