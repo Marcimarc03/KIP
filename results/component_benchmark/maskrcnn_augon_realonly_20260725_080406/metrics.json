@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "run_id": "maskrcnn_augon_realonly_20260725_080406",
+  "stage": 1,
+  "model": "maskrcnn",
+  "tag": "realonly",
+  "init_weights": null,
+  "augmentation": true,
+  "seed": 42,
+  "smoke": false,
+  "device": "cuda:0",
+  "environment": {
+    "kip_workers": 0,
+    "torch": "2.13.0+cu126",
+    "ultralytics": "8.4.95"
+  },
+  "split": {
+    "scheme": "tool_disjoint_tool10+tool98",
+    "n_folds": 1,
+    "test_set": "real_v3/test",
+    "fingerprint": {
+      "n_test": 148,
+      "test_tools": [
+        "tool10",
+        "tool98"
+      ],
+      "test_json_sha256": "deda10926453225a",
+      "n_classes_total": 9,
+      "n_classes_in_test_gt": 6,
+      "test_category_ids": [
+        2,
+        3,
+        4,
+        5,
+        7,
+        8
+      ]
+    }
+  },
+  "dataset": {
+    "n_train": 713,
+    "n_val": 101,
+    "n_test": 148,
+    "n_good": 0,
+    "n_defect": 0,
+    "n_tiles_train": 0,
+    "n_tiles_test": 0,
+    "missing_mask_policy": "normal",
+    "crop_failures": 0
+  },
+  "runtime": {
+    "train_seconds": 23318.37,
+    "infer_ms_per_image": 981.0
+  },
+  "metrics": {
+    "bbox_map50": 0.7690200372284806,
+    "bbox_map50_95": 0.6503187780724636,
+    "segm_map50": 0.7671901068660346,
+    "segm_map50_95": 0.6521915830893437,
+    "segm_map75": 0.6564581973197459,
+    "precision": 0.6826360177805137,
+    "recall": 0.7783422577463424,
+    "per_class": {
+      "anti-vibration_handle": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "bearing_plate": {
+        "segm_ap50": 1.0,
+        "segm_ap50_95": 1.0
+      },
+      "bevel_gear_drive": {
+        "segm_ap50": 0.5841584158415841,
+        "segm_ap50_95": 0.5264123471170647
+      },
+      "bevel_gear_spindle": {
+        "segm_ap50": 1.0,
+        "segm_ap50_95": 0.9407304380266267
+      },
+      "gearbox_housing": {
+        "segm_ap50": 0.47970988325266745,
+        "segm_ap50_95": 0.4246414842241599
+      },
+      "intermediate_gearbox": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "motor_housing": {
+        "segm_ap50": 0.9864296702206907,
+        "segm_ap50_95": 0.5534687190029464
+      },
+      "shaft": {
+        "segm_ap50": 0.5528426718812652,
+        "segm_ap50_95": 0.46789651016526435
+      },
+      "wheel_guard": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      }
+    }
+  },
+  "git_commit": "7a0d840",
+  "timestamp_utc": "2026-07-25T14:35:12.920870+00:00"
+}
