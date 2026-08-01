@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0",
+  "run_id": "maskrcnn_augon_synthpretrain_20260729_212218",
+  "stage": 1,
+  "model": "maskrcnn",
+  "tag": "synthpretrain",
+  "init_weights": null,
+  "augmentation": true,
+  "seed": 42,
+  "smoke": false,
+  "device": "cuda:0",
+  "environment": {
+    "kip_workers": 0,
+    "torch": "2.13.0+cu126",
+    "kip_maskrcnn_init": "/workspace/blum/KIP/results/maskrcnn_synth/weights/maskrcnn.pt",
+    "ultralytics": "8.4.95"
+  },
+  "split": {
+    "scheme": "tool_disjoint_tool10+tool98",
+    "n_folds": 1,
+    "test_set": "real_v3/test",
+    "fingerprint": {
+      "n_test": 148,
+      "test_tools": [
+        "tool10",
+        "tool98"
+      ],
+      "test_json_sha256": "deda10926453225a",
+      "n_classes_total": 9,
+      "n_classes_in_test_gt": 6,
+      "test_category_ids": [
+        2,
+        3,
+        4,
+        5,
+        7,
+        8
+      ]
+    }
+  },
+  "dataset": {
+    "n_train": 713,
+    "n_val": 101,
+    "n_test": 148,
+    "n_good": 0,
+    "n_defect": 0,
+    "n_tiles_train": 0,
+    "n_tiles_test": 0,
+    "missing_mask_policy": "normal",
+    "crop_failures": 0
+  },
+  "runtime": {
+    "train_seconds": 22931.08,
+    "infer_ms_per_image": 837.39
+  },
+  "metrics": {
+    "bbox_map50": 0.9084004577029793,
+    "bbox_map50_95": 0.7587516399093018,
+    "segm_map50": 0.8985305592092033,
+    "segm_map50_95": 0.7577253275646785,
+    "segm_map75": 0.7671146373187944,
+    "precision": 0.7848948573744591,
+    "recall": 0.8205044563021836,
+    "per_class": {
+      "anti-vibration_handle": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "bearing_plate": {
+        "segm_ap50": 1.0,
+        "segm_ap50_95": 1.0
+      },
+      "bevel_gear_drive": {
+        "segm_ap50": 0.5841584158415841,
+        "segm_ap50_95": 0.5387832900937153
+      },
+      "bevel_gear_spindle": {
+        "segm_ap50": 1.0,
+        "segm_ap50_95": 0.9114352975786667
+      },
+      "gearbox_housing": {
+        "segm_ap50": 0.8586859423268464,
+        "segm_ap50_95": 0.6152247790638825
+      },
+      "intermediate_gearbox": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      },
+      "motor_housing": {
+        "segm_ap50": 0.957190333348235,
+        "segm_ap50_95": 0.6007838007469147
+      },
+      "shaft": {
+        "segm_ap50": 0.9911486637385544,
+        "segm_ap50_95": 0.8801247979048916
+      },
+      "wheel_guard": {
+        "segm_ap50": -1.0,
+        "segm_ap50_95": -1.0
+      }
+    }
+  },
+  "git_commit": "b22584b",
+  "timestamp_utc": "2026-07-30T03:46:36.520261+00:00"
+}
